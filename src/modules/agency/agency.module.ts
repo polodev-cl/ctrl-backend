@@ -6,7 +6,7 @@ import { AgencyEntity } from '@modules/agency/entities/agency.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([AgencyEntity])
+    TypeOrmModule.forFeature([AgencyEntity]),
   ],
   controllers: [AgencyController],
   providers: [AgencyService]
