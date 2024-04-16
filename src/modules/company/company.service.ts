@@ -30,6 +30,8 @@ export class CompanyService {
       whereFilter['activo'] = Equal(queryParams.activo);
     if (queryParams.id) whereFilter['id'] = Equal(queryParams.id);
 
+    console.log(whereFilter);
+
     return await this._companyRepository.find({ where: whereFilter});
   }
 
