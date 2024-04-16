@@ -1,5 +1,5 @@
 import { UserEntity } from "@modules/user/entities/user.entity";
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
 
 @Entity("ctrl_equipo")
 @Unique(["nombre"])
@@ -95,4 +95,7 @@ export class EquipmentEntity {
   @ManyToOne(() => UserEntity, (user) => user.nombres)
   @JoinColumn({ name: "id_modificacion" })
   id_modificacion: number;
+
+  @DeleteDateColumn({type: 'timestamptz', onUpdate: 'CURRENT_TIMESTAMP', comment: 'Fecha y hora de eliminación'})
+  fechaEliminacion: Date;
 }

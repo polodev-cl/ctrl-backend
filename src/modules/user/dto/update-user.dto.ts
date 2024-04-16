@@ -7,27 +7,27 @@ export class UpdateUserDto implements Partial<UserEntity> {
   @IsString()
   @Length(3, 255)
   @IsOptional()
-  cognito_id!: string;
+  cognito_id?: string;
 
   @IsString()
   @Length(3, 255)
   @IsOptional()
-  email!: string;
+  email?: string;
 
   @IsString()
   @Length(3, 50)
   @IsOptional()
-  contrasena!: string;
+  contrasena?: string;
 
   @IsString()
   @Length(3, 255)
   @IsOptional()
-  nombres!: string;
+  nombres?: string;
 
   @IsString()
   @Length(3, 255)
   @IsOptional()
-  apellidos!: string;
+  apellidos?: string;
 
   @IsNumber()
   @IsOptional()
