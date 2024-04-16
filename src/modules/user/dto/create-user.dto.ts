@@ -1,7 +1,6 @@
-import { IsBoolean, IsOptional, IsString, IsUrl, Length, IsNumber } from 'class-validator';
-import { Expose, Type }                                   from 'class-transformer';
+import { IsOptional, IsString, Length, IsNumber } from "class-validator";
 
-import { UserEntity } from '../entities/user.entity';
+import { UserEntity } from "../entities/user.entity";
 
 export class CreateUserDto implements Partial<UserEntity> {
   @IsString()
@@ -39,6 +38,4 @@ export class CreateUserDto implements Partial<UserEntity> {
   @IsNumber()
   @IsOptional()
   empresaId?: number;
-
-
 }

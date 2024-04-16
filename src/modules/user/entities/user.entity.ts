@@ -35,7 +35,7 @@ export class UserEntity {
   apellidos: string;
 
   @Column({ name: "usu_id_creacion", comment: "ID del usuario que creó el registro" })
-  usuarioCrecionId: number;
+  usuarioCreacionId: number;
 
   @Column({ name: "usu_id_modificacion", comment: "ID del usuario que modificó el registro" })
   usuarioModificacionId: number;
@@ -46,13 +46,13 @@ export class UserEntity {
   @Column({ name: "emp_id", comment: "ID de la empresa del usuario" })
   empresaId: number;
 
-  @ManyToOne(() => UserEntity)
+  @ManyToOne(() => UserEntity, { nullable: true })
   @JoinColumn({ name: "usu_id_creacion" })
-  usuarioCreacion: UserEntity;
+  usuarioCreacion: UserEntity | 1;
 
-  @ManyToOne(() => UserEntity)
+  @ManyToOne(() => UserEntity, { nullable: true })
   @JoinColumn({ name: "usu_id_modificacion" })
-  usuarioModificacion: UserEntity;
+  usuarioModificacion: UserEntity | 1;
 
   @ManyToOne(() => RolEntity, (usuarioRol) => usuarioRol.usuarios)
   @JoinColumn({ name: "rol_id" })
