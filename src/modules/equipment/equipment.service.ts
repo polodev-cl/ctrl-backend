@@ -1,10 +1,10 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { EquipmentEntity } from "./entities/equipment.entity";
-import { Equal, FindOptionsWhere, ILike, Repository } from "typeorm";
-import { EquipmentQueryDto } from "./dto/equipment-query.dto";
-import { CreateEquipmentDto } from "./dto/create-equipment.dto";
-import { UpdateEquipmentDto } from "./dto/update-equipment.dto";
+import { Injectable }                                 from '@nestjs/common';
+import { InjectRepository }                           from '@nestjs/typeorm';
+import { EquipmentEntity }                            from './entities/equipment.entity';
+import { Equal, FindOptionsWhere, ILike, Repository } from 'typeorm';
+import { EquipmentQueryDto }                          from './dto/equipment-query.dto';
+import { CreateEquipmentDto }                         from './dto/create-equipment.dto';
+import { UpdateEquipmentDto }                         from './dto/update-equipment.dto';
 
 @Injectable()
 export class EquipmentService {
@@ -28,7 +28,7 @@ export class EquipmentService {
   }
 
   public async update(id: number, updateEquipmentDto: UpdateEquipmentDto) {
-    return await this._equipmentRepository.update(id, updateEquipmentDto);
+    return await this._equipmentRepository.update(id, updateEquipmentDto as Partial<EquipmentEntity>);
   }
 
   public async delete(id: number) {

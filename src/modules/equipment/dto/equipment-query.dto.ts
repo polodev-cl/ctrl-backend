@@ -1,7 +1,8 @@
-import { Type, Transform } from "class-transformer";
-import { IsDate, IsNumber, IsOptional, Length, IsString, IsBoolean } from "class-validator";
-import { EquipmentEntity } from "../entities/equipment.entity";
-import { UserEntity } from "@modules/user/entities/user.entity";
+import { Type }                                                   from 'class-transformer';
+import { IsDate, IsEnum, IsNumber, IsOptional, IsString, Length } from 'class-validator';
+import { EquipmentEntity }                                        from '../entities/equipment.entity';
+import { EquipmentUseEnum }                                       from '@modules/equipment/enums/equipment-use.enum';
+import { EquipmentDiskTypeEnum }                                  from '@modules/equipment/enums/equipment-disk-type.enum';
 
 export class EquipmentQueryDto implements Partial<EquipmentEntity> {
   @IsNumber()
@@ -62,10 +63,9 @@ export class EquipmentQueryDto implements Partial<EquipmentEntity> {
   @IsOptional()
   sistemaOperativoVersion?: string;
 
-  @IsString()
-  @Length(3, 50)
+  @IsEnum(EquipmentUseEnum)
   @IsOptional()
-  uso?: string;
+  uso?: EquipmentUseEnum;
 
   @IsString()
   @Length(3, 50)
@@ -102,11 +102,9 @@ export class EquipmentQueryDto implements Partial<EquipmentEntity> {
   @IsOptional()
   ramGb?: number;
 
-  
-  @IsString()
-  @Length(3, 50)
+  @IsEnum(EquipmentDiskTypeEnum)
   @IsOptional()
-  disco?: string;
+  disco?: EquipmentDiskTypeEnum;
 
   @IsString()
   @Length(3, 50)
@@ -135,11 +133,9 @@ export class EquipmentQueryDto implements Partial<EquipmentEntity> {
 
   @IsNumber()
   @IsOptional()
-  idCreacionId?: number; 
+  idCreacionId?: number;
 
   @IsNumber()
   @IsOptional()
   idModificacionId?: number;
-
-
 }

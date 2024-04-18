@@ -1,101 +1,128 @@
-import { UserEntity } from "@modules/user/entities/user.entity";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
-@Entity("ctrl_equipo")
-@Unique(["nombre"])
+import { AgencyEntity }          from '@modules/agency/entities/agency.entity';
+import { EquipmentDiskTypeEnum } from '@modules/equipment/enums/equipment-disk-type.enum';
+import { EquipmentUseEnum }      from '@modules/equipment/enums/equipment-use.enum';
+import { EquipmentStatusEnum }   from '@modules/equipment/enums/equipment-status.enum';
+import { UserEntity }            from '@modules/user/entities/user.entity';
+
+@Entity('ctrl_equipo')
+// Add default filter
 export class EquipmentEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({comment: 'Identificador del equipo'})
   id: number;
 
-  @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  @CreateDateColumn({type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP', comment: 'Fecha y hora de creacion'})
   fechaCreacion: Date;
 
-  @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP" })
+  @UpdateDateColumn({type: 'timestamptz', onUpdate: 'CURRENT_TIMESTAMP', comment: 'Fecha y hora de modificación'})
   fechaModificacion: Date;
 
-  @Column({ type: "int", default: 1 })
-  estado: number;
+  @Column({
+    type: 'enum',
+    enum: EquipmentStatusEnum,
+    default: EquipmentStatusEnum.ACTIVO,
+    comment: 'Estado del equipo. 0 = baja, 1 = activo, 2 = bodega'
+  })
+  estado: EquipmentStatusEnum;
 
-  @Column({ type: "date", default: () => "CURRENT_DATE" })
+  @Column({type: 'date', default: () => 'CURRENT_DATE', comment: 'Fecha de ingreso del equipo'})
   fechaIngreso: Date;
 
-  @Column({ type: "varchar", length: 50, nullable: true })
+  @Column({length: 50, comment: 'Orden de compra del equipo'})
   ordenCompra: string;
 
-  @Column({ type: "varchar", length: 50, nullable: true })
-  rut: string;
+  @Column({length: 50, nullable: true, comment: 'RUT de usuario asignado'})
+  rut?: string;
 
-  @Column({ type: "int", nullable: true })
-  ageId: number;
+  @Column({name: 'age_id', nullable: true, comment: 'Agencia a la que está vinculado el equipo'})
+  agenciaId?: number;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
-  ageNemonico: string;
+  @Column({length: 255, nullable: true, comment: 'Nemónico se obtiene de agencia'})
+  agenciaMnemonic?: string;
 
-  @Column({ type: "int", nullable: true })
-  ageDpc: number;
+  @Column({type: 'int', nullable: true, comment: 'DCP se obtiene de agencia'})
+  agenciaDpc?: number;
 
-  @Column({ type: "int", nullable: true })
-  inventario: number;
+  @Column({nullable: true, comment: 'Control interno o número de inventario'})
+  inventario?: number;
 
-  @Column({ type: "varchar", length: 50 })
+  @Column({length: 50, comment: 'Corresponde al tipo de equipo'})
   tipo: string;
 
-  @Column({ type: "varchar", length: 50, nullable: true })
-  sistemaOperativo: string;
+  @Column({length: 50, nullable: true, comment: 'Sistema operativo del equipo'})
+  sistemaOperativo?: string;
 
-  @Column({ type: "varchar", length: 50, nullable: true })
-  sistemaOperativoVersion: string;
+  @Column({length: 50, nullable: true, comment: 'Versión del sistema operativo del equipo'})
+  sistemaOperativoVersion?: string;
 
-  @Column({ type: "varchar", length: 50, nullable: true })
-  uso: string;
+  @Column({
+    type: 'enum',
+    enum: EquipmentUseEnum,
+    default: EquipmentUseEnum.CAJA,
+    comment: 'Uso del equipo'
+  })
+  uso: EquipmentUseEnum;
 
-  @Column({ type: "varchar", length: 50, default: "GENERICO" })
+  @Column({length: 50, default: 'GENERICO', comment: 'Marca del equipo'})
   marca: string;
 
-  @Column({ type: "varchar", length: 50, default: "GENERICO" })
+  @Column({length: 50, default: 'GENERICO', comment: 'Modelo del equipo'})
   modelo: string;
 
-  @Column({ type: "varchar", length: 50, nullable: true })
-  mac: string;
+  @Column({length: 50, nullable: true, comment: 'Dirección MAC del equipo con validación de formato'})
+  mac?: string;
 
-  @Column({ type: "varchar", length: 50, nullable: true })
-  ip: string;
+  @Column({length: 50, nullable: true, comment: 'Dirección IP del equipo con validación de formato'})
+  ip?: string;
 
-  @Column({ type: "varchar", length: 50, nullable: true })
+  @Column({length: 50, comment: 'Nombre del equipo'})
   nombre: string;
 
-  @Column({ type: "varchar", length: 50, nullable: true })
-  procesador: string;
+  @Column({length: 50, nullable: true, comment: 'Procesador del equipo'})
+  procesador?: string;
 
-  @Column({ type: "int", nullable: true })
-  ramGb: number;
+  @Column({type: 'int', nullable: true, comment: 'GB de RAM del equipo'})
+  ramGb?: number;
 
-  @Column({ type: "varchar", length: 50, nullable: true })
-  disco: string;
+  @Column({
+    type: 'enum',
+    enum: EquipmentDiskTypeEnum,
+    nullable: true,
+    comment: 'Tipo de disco del equipo'
+  })
+  disco?: EquipmentDiskTypeEnum;
 
-  @Column({ type: "varchar", length: 50, nullable: true })
-  ddllTbk: string;
+  @Column({length: 50, nullable: true, comment: 'DDLL TBK del equipo con validación de formato'})
+  ddllTbk?: string;
 
-  @Column({ type: "varchar", length: 50, nullable: true })
-  serie: string;
+  @Column({length: 50, nullable: true, comment: 'Número de serie del equipo'})
+  serie?: string;
 
-  @Column({ type: "varchar", length: 50, nullable: true })
+  @Column({length: 50, comment: 'Encargado de la agencia'})
   encargadoAgencia: string;
 
-  @Column({ type: "varchar", length: 50, nullable: true })
+  @Column({length: 50, comment: 'Ubicación descriptiva del equipo'})
   ubicacion: string;
 
-  @Column({ type: "int", default: 0 })
+  @Column({type: 'int', default: 0, comment: 'Meses de garantía del equipo'})
   garantiaMeses: number;
 
-  @ManyToOne(() => UserEntity, (user) => user.nombres)
-  @JoinColumn({ name: "id_creacion" })
-  idCreacion: number;
+  @Column({name: 'usu_id_creacion', comment: 'ID del usuario que creó el registro'})
+  usuarioIdCreacion: number;
 
-  @ManyToOne(() => UserEntity, (user) => user.nombres)
-  @JoinColumn({ name: "id_modificacion" })
-  id_modificacion: number;
+  @Column({name: 'usu_id_modificacion', comment: 'ID del usuario que modificó el registro'})
+  usuarioIdModificacion: number;
 
-  @DeleteDateColumn({type: 'timestamptz', onUpdate: 'CURRENT_TIMESTAMP', comment: 'Fecha y hora de eliminación'})
-  fechaEliminacion: Date;
+  @ManyToOne(() => AgencyEntity)
+  @JoinColumn({name: 'age_id', referencedColumnName: 'id'})
+  agencia?: AgencyEntity;
+
+  @ManyToOne(() => UserEntity)
+  @JoinColumn({name: 'usu_id_creacion', referencedColumnName: 'id'})
+  usuarioCreacion: UserEntity;
+
+  @ManyToOne(() => UserEntity)
+  @JoinColumn({name: 'usu_id_modificacion', referencedColumnName: 'id'})
+  usuarioModificacion: UserEntity;
 }

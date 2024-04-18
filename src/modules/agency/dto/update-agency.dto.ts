@@ -1,6 +1,6 @@
-import { IsBoolean, IsOptional, IsString, IsUrl, Length, IsNumber } from 'class-validator';
-import { Expose, Type }                                   from 'class-transformer';
-import { AgencyEntity } from '../entities/agency.entity';
+import { IsBoolean, IsNumber, IsOptional, IsString, Length } from 'class-validator';
+import { Type }                                              from 'class-transformer';
+import { AgencyEntity }                                      from '../entities/agency.entity';
 
 
 export class UpdateAgencyDto implements Partial<AgencyEntity> {
