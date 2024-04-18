@@ -1,10 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
-import { EquipmentService } from './equipment.service';
-import { CreateEquipmentDto } from './dto/create-equipment.dto';
-import { EquipmentQueryDto } from './dto/equipment-query.dto';
-import { UpdateEquipmentDto } from './dto/update-equipment.dto';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from "@nestjs/common";
+import { EquipmentService } from "./equipment.service";
+import { CreateEquipmentDto } from "./dto/create-equipment.dto";
+import { EquipmentQueryDto } from "./dto/equipment-query.dto";
+import { UpdateEquipmentDto } from "./dto/update-equipment.dto";
 
-@Controller('equipment')
+@Controller("equipment")
 export class EquipmentController {
   constructor(private readonly _equipmentService: EquipmentService) {}
 
