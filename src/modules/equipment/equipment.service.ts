@@ -1,22 +1,33 @@
-import { Injectable }                                 from '@nestjs/common';
-import { InjectRepository }                           from '@nestjs/typeorm';
-import { EquipmentEntity }                            from './entities/equipment.entity';
-import { Equal, FindOptionsWhere, ILike, Repository } from 'typeorm';
-import { EquipmentQueryDto }                          from './dto/equipment-query.dto';
-import { CreateEquipmentDto }                         from './dto/create-equipment.dto';
-import { UpdateEquipmentDto }                         from './dto/update-equipment.dto';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { EquipmentEntity } from "./entities/equipment.entity";
+import { Equal, FindOptionsWhere, ILike, Repository } from "typeorm";
+import { EquipmentQueryDto } from "./dto/equipment-query.dto";
+import { CreateEquipmentDto } from "./dto/create-equipment.dto";
+import { UpdateEquipmentDto } from "./dto/update-equipment.dto";
 
 @Injectable()
 export class EquipmentService {
   constructor(@InjectRepository(EquipmentEntity) private readonly _equipmentRepository: Repository<EquipmentEntity>) {}
 
   public async list(queryParams?: EquipmentQueryDto) {
-    const whereFilter: FindOptionsWhere<EquipmentEntity> = Object.keys(queryParams).reduce((acc, key) => {
-      if (queryParams[key]) acc[key] = ILike(`%${queryParams[key]}%`);
-      return acc;
-    }, {});
+    const whereFilter: FindOptionsWhere<EquipmentEntity> = {};
 
-    if (queryParams.id) whereFilter["id"] = Equal(queryParams.id);
+    Object.keys(queryParams).forEach((key) => {
+      if (queryParams[key]) {
+        const value = queryParams[key];
+        // Verificamos primero si el campo es específicamente el rut
+        if (key === "rut") {
+          whereFilter[key] = ILike(`%${value}%`);
+        } else if (!isNaN(parseFloat(value))) {
+          // Si es un número, aplicamos Equal
+          whereFilter[key] = Equal(parseFloat(value));
+        } else {
+          // Para cualquier otro caso de string, aplicamos ILike
+          whereFilter[key] = ILike(`%${value}%`);
+        }
+      }
+    });
 
     console.log(whereFilter);
 

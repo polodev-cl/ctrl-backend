@@ -108,10 +108,10 @@ export class EquipmentEntity {
   @Column({type: 'int', default: 0, comment: 'Meses de garantía del equipo'})
   garantiaMeses: number;
 
-  @Column({name: 'usu_id_creacion', comment: 'ID del usuario que creó el registro'})
+  @Column({name: 'usu_id_creacion', nullable: true, comment: 'ID del usuario que creó el registro'})
   usuarioIdCreacion: number;
 
-  @Column({name: 'usu_id_modificacion', comment: 'ID del usuario que modificó el registro'})
+  @Column({name: 'usu_id_modificacion',nullable: true, comment: 'ID del usuario que modificó el registro'})
   usuarioIdModificacion: number;
 
   @ManyToOne(() => AgencyEntity)

@@ -1,8 +1,8 @@
-import { Type }                                                   from 'class-transformer';
-import { IsDate, IsEnum, IsNumber, IsOptional, IsString, Length } from 'class-validator';
-import { EquipmentEntity }                                        from '../entities/equipment.entity';
-import { EquipmentUseEnum }                                       from '@modules/equipment/enums/equipment-use.enum';
-import { EquipmentDiskTypeEnum }                                  from '@modules/equipment/enums/equipment-disk-type.enum';
+import { Type } from "class-transformer";
+import { IsDate, IsEnum, IsNumber, IsOptional, IsString, Length } from "class-validator";
+import { EquipmentEntity } from "../entities/equipment.entity";
+import { EquipmentUseEnum } from "@modules/equipment/enums/equipment-use.enum";
+import { EquipmentDiskTypeEnum } from "@modules/equipment/enums/equipment-disk-type.enum";
 
 export class EquipmentQueryDto implements Partial<EquipmentEntity> {
   @IsNumber()
