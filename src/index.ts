@@ -14,7 +14,9 @@ const bootstrap = async () => {
   });
 
   nestApp.setGlobalPrefix("api");
-  nestApp.enableCors();
+  nestApp.enableCors({
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
+  });
   nestApp.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -37,3 +39,32 @@ export const handler = async (event, context) => {
 
   return cachedServer(event, context);
 };
+
+// import { NestFactory } from "@nestjs/core";
+// import { ValidationPipe } from "@nestjs/common";
+// import { ConfigService } from "@nestjs/config";
+
+// import { AppModule } from "./app.module";
+// import { HttpExceptionFilter } from "./common/filters/http-exception.filter";
+// import { HttpResponseInterceptor } from "./common/interceptors/http-response.interceptor";
+
+// async function bootstrap() {
+//   const app = await NestFactory.create(AppModule);
+//   const configService = app.get(ConfigService);
+//   app.setGlobalPrefix("api");
+//   app.enableCors();
+//   app.useGlobalFilters(new HttpExceptionFilter());
+//   app.useGlobalInterceptors(new HttpResponseInterceptor());
+
+//   app.useGlobalPipes(
+//     new ValidationPipe({
+//       transform: true,
+//       // whitelist: true,
+//       // forbidNonWhitelisted: true
+//     })
+//   );
+
+//   await app.listen(configService.get("port") || 3000);
+// }
+
+// bootstrap().then();
