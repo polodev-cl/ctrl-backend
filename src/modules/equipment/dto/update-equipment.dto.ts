@@ -45,7 +45,7 @@ export class UpdateEquipmentDto implements Partial<EquipmentEntity> {
   inventario?: number;
 
   @IsString()
-  @Length(3, 50)
+  @Length(2, 50)
   @IsOptional()
   tipo?: string;
 
@@ -55,7 +55,7 @@ export class UpdateEquipmentDto implements Partial<EquipmentEntity> {
   sistemaOperativo?: string;
 
   @IsString()
-  @Length(3, 50)
+  @Length(1, 50)
   @IsOptional()
   sistemaOperativoVersion?: string;
 
@@ -74,7 +74,7 @@ export class UpdateEquipmentDto implements Partial<EquipmentEntity> {
   modelo?: string;
 
   @IsString()
-  @Length(3, 50)
+  @Length(0, 50)
   @IsOptional()
   mac?: string;
 

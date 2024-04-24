@@ -20,6 +20,8 @@ export class EquipmentService {
           whereFilter[key] = ILike(`%${value}%`);
         } else if (key === "uso") {
           whereFilter[key] = value;
+        } else if (key === "sistemaOperativoVersion") {
+          whereFilter[key] = ILike(`%${value}%`);
         } else if (!isNaN(parseFloat(value))) {
           whereFilter[key] = Equal(parseFloat(value));
         } else {

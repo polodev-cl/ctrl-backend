@@ -39,11 +39,11 @@ export class CreateEquipmentDto implements Partial<EquipmentEntity> {
   inventario?: number;
 
   @IsString()
-  @Length(3, 50)
+  @Length(2, 50)
   tipo!: string;
 
   @IsString()
-  @Length(3, 50)
+  @Length(1, 50)
   @IsOptional()
   sistemaOperativo?: string;
 
@@ -64,7 +64,7 @@ export class CreateEquipmentDto implements Partial<EquipmentEntity> {
   modelo!: string;
 
   @IsString()
-  @Length(3, 50)
+  @Length(0, 50)
   @IsOptional()
   mac?: string;
 
