@@ -1,13 +1,14 @@
-import { Module } from "@nestjs/common";
-import { ConfigModule, ConfigService } from "@nestjs/config";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { AgencyModule } from "@modules/agency/agency.module";
-import { CompanyModule } from "@modules/company/company.module";
-import { EquipmentModule } from "@modules/equipment/equipment.module";
-import { RolModule } from "@modules/rol/rol.module";
-import { UserModule } from "@modules/user/user.module";
-import { AppController } from "./app.controller";
-import { AppService } from "./app.service";
+import { Module }                      from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule }               from '@nestjs/typeorm';
+import { AgencyModule }                from '@modules/agency/agency.module';
+import { CompanyModule }               from '@modules/company/company.module';
+import { EquipmentModule }             from '@modules/equipment/equipment.module';
+import { RolModule }                   from '@modules/rol/rol.module';
+import { UserModule }                  from '@modules/user/user.module';
+import { AppController }               from './app.controller';
+import { AppService }                  from './app.service';
+import { EquipmentSubscriber }         from '@modules/equipment/entities/events/equipment.subscriber';
 
 @Module({
   imports: [
@@ -17,34 +18,35 @@ import { AppService } from "./app.service";
         () => ({
           port: parseInt(process.env.PORT, 10) || 3000,
           database: {
-            host: process.env.DB_HOST || "127.0.0.1",
+            host: process.env.DB_HOST || '127.0.0.1',
             port: parseInt(process.env.DB_PORT, 10) || 5432,
-            username: process.env.DB_USERNAME || "postgres",
-            password: process.env.DB_PASSWORD || "postgres",
-            name: process.env.DB_DATABASE || "postgres",
+            username: process.env.DB_USERNAME || 'postgres',
+            password: process.env.DB_PASSWORD || 'postgres',
+            name: process.env.DB_DATABASE || 'postgres',
           },
           environment: process.env.NODE_ENV,
         }),
       ],
     }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
+      imports: [ ConfigModule ],
+      inject: [ ConfigService ],
       useFactory: (configService: ConfigService) => {
-        console.log(configService.get("database"));
+        console.log(configService.get('database'));
         return {
-          type: "postgres",
-          host: configService.get("database.host"),
-          port: configService.get("database.port"),
-          username: configService.get("database.username"),
-          password: configService.get("database.password"),
-          database: configService.get("database.name"),
+          type: 'postgres',
+          host: configService.get('database.host'),
+          port: configService.get('database.port'),
+          username: configService.get('database.username'),
+          password: configService.get('database.password'),
+          database: configService.get('database.name'),
+          subscribers: [ EquipmentSubscriber ],
           autoLoadEntities: true,
-          synchronize: false,
-          logging: configService.get("environment") === "dev",
-          ssl: {
-            rejectUnauthorized: false,
-          },
+          synchronize: true,
+          logging: configService.get('environment') === 'dev',
+          // ssl: {
+          //   rejectUnauthorized: false,
+          // },
         };
       },
     }),
@@ -54,7 +56,7 @@ import { AppService } from "./app.service";
     AgencyModule,
     EquipmentModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [ AppController ],
+  providers: [ AppService ],
 })
 export class AppModule {}

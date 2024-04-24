@@ -5,10 +5,14 @@ import { Equal, FindOptionsWhere, ILike, Repository } from "typeorm";
 import { EquipmentQueryDto } from "./dto/equipment-query.dto";
 import { CreateEquipmentDto } from "./dto/create-equipment.dto";
 import { UpdateEquipmentDto } from "./dto/update-equipment.dto";
+import { EquipmentHistoryEntity } from '@modules/equipment/entities/equipment-history.entity';
 
 @Injectable()
 export class EquipmentService {
-  constructor(@InjectRepository(EquipmentEntity) private readonly _equipmentRepository: Repository<EquipmentEntity>) {}
+  constructor(
+    @InjectRepository(EquipmentEntity) private readonly _equipmentRepository: Repository<EquipmentEntity>,
+    @InjectRepository(EquipmentHistoryEntity) private readonly _equipmentHistoryEntityRepository: Repository<EquipmentHistoryEntity>
+  ) {}
 
   public async list(queryParams?: EquipmentQueryDto) {
     const whereFilter: FindOptionsWhere<EquipmentEntity> = {};
@@ -45,5 +49,15 @@ export class EquipmentService {
 
   public async delete(id: number) {
     return await this._equipmentRepository.softDelete(id);
+  }
+
+  public async saveLog(id: number, userId: number, description: string) {
+    const tempHistory: EquipmentHistoryEntity = this._equipmentHistoryEntityRepository.create({
+      equipoId: id,
+      usuarioIdCreacion: userId,
+      descripcion: description,
+    });
+
+    return await this._equipmentHistoryEntityRepository.save(tempHistory);
   }
 }

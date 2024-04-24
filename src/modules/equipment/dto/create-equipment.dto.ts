@@ -64,12 +64,12 @@ export class CreateEquipmentDto implements Partial<EquipmentEntity> {
   modelo!: string;
 
   @IsString()
-  @Length(0, 50)
+  @Length(12, 50)
   @IsOptional()
   mac?: string;
 
   @IsString()
-  @Length(3, 50)
+  @Length(5, 50)
   @IsOptional()
   ip?: string;
 

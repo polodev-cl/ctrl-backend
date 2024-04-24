@@ -9,10 +9,10 @@ export class EquipmentHistoryEntity {
   @PrimaryGeneratedColumn({comment: 'Identificador del historial del equipo'})
   id: number;
 
-  @Column({comment: 'ID del equipo'})
+  @Column({name: 'equ_id', comment: 'ID del equipo'})
   equipoId: number;
 
-  @Column({name: 'usu_id_creacion', comment: 'ID del usuario que realizó la acción'})
+  @Column({name: 'usu_id_creacion', comment: 'ID del usuario que realizó la acción', nullable: true})
   usuarioIdCreacion: number;
 
   @Column({type: 'varchar', length: 255, comment: 'Descripción de la acción realizada'})
@@ -25,7 +25,7 @@ export class EquipmentHistoryEntity {
   @JoinColumn({name: 'equ_id'})
   equipo: EquipmentEntity;
 
-  @ManyToOne(() => UserEntity)
+  @ManyToOne(() => UserEntity, {nullable: true})
   @JoinColumn({name: 'usu_id_creacion'})
-  usuario: UserEntity;
+  usuario?: UserEntity;
 }
