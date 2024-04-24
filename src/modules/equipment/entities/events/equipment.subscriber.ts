@@ -21,7 +21,6 @@ export class EquipmentSubscriber implements EntitySubscriberInterface {
   async afterInsert(event: InsertEvent<any>) {
     const {entity, manager} = event;
 
-    console.log('Entity:', entity);
     const historyRepository = manager.getRepository(EquipmentHistoryEntity);
     const tempHistory: EquipmentHistoryEntity = historyRepository.create({
       equipoId: entity.id,
@@ -29,8 +28,7 @@ export class EquipmentSubscriber implements EntitySubscriberInterface {
       descripcion: 'Equipo creado',
     });
 
-    const savedHistory = await historyRepository.save(tempHistory);
-    console.log('Saved history:', savedHistory);
+    await historyRepository.save(tempHistory);
   }
 
   @AfterUpdate()

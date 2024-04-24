@@ -1,11 +1,11 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { EquipmentEntity } from "./entities/equipment.entity";
-import { Equal, FindOptionsWhere, ILike, Repository } from "typeorm";
-import { EquipmentQueryDto } from "./dto/equipment-query.dto";
-import { CreateEquipmentDto } from "./dto/create-equipment.dto";
-import { UpdateEquipmentDto } from "./dto/update-equipment.dto";
-import { EquipmentHistoryEntity } from '@modules/equipment/entities/equipment-history.entity';
+import { Injectable }                                 from '@nestjs/common';
+import { InjectRepository }                           from '@nestjs/typeorm';
+import { EquipmentEntity }                            from './entities/equipment.entity';
+import { Equal, FindOptionsWhere, ILike, Repository } from 'typeorm';
+import { EquipmentQueryDto }                          from './dto/equipment-query.dto';
+import { CreateEquipmentDto }                         from './dto/create-equipment.dto';
+import { UpdateEquipmentDto }                         from './dto/update-equipment.dto';
+import { EquipmentHistoryEntity }                     from '@modules/equipment/entities/equipment-history.entity';
 
 @Injectable()
 export class EquipmentService {
@@ -20,23 +20,23 @@ export class EquipmentService {
     Object.keys(queryParams).forEach((key) => {
       if (queryParams[key]) {
         const value = queryParams[key];
-        if (key === "rut") {
-          whereFilter[key] = ILike(`%${value}%`);
-        } else if (key === "uso") {
+        if (key === 'rut') {
+          whereFilter[key] = ILike(`%${ value }%`);
+        } else if (key === 'uso') {
           whereFilter[key] = value;
-        } else if (key === "sistemaOperativoVersion") {
-          whereFilter[key] = ILike(`%${value}%`);
+        } else if (key === 'sistemaOperativoVersion') {
+          whereFilter[key] = ILike(`%${ value }%`);
         } else if (!isNaN(parseFloat(value))) {
           whereFilter[key] = Equal(parseFloat(value));
         } else {
-          whereFilter[key] = ILike(`%${value}%`);
+          whereFilter[key] = ILike(`%${ value }%`);
         }
       }
     });
 
     console.log(whereFilter);
 
-    return await this._equipmentRepository.find({ where: whereFilter, relations: ['agencia', 'agencia.empresa', 'usuarioCreacion'] });
+    return await this._equipmentRepository.find({where: whereFilter, relations: [ 'agencia', 'agencia.empresa', 'usuarioCreacion' ]});
   }
 
   public async create(createEquipmentDto: CreateEquipmentDto) {
@@ -51,7 +51,7 @@ export class EquipmentService {
     return await this._equipmentRepository.softDelete(id);
   }
 
-public async history(id: number) {
-    return await this._equipmentHistoryEntityRepository.find({ where: { equipoId: id } });
+  public async history(id: number) {
+    return await this._equipmentHistoryEntityRepository.find({where: {equipoId: id}});
   }
 }
