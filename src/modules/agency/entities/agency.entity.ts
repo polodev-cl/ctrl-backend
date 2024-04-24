@@ -19,19 +19,19 @@ export class AgencyEntity {
   @Column({comment: 'DCP de agencia'})
   dpc: number;
 
-  @Column({comment: 'Empresa a la que pertenece la agencia'})
+  @Column({name: 'emp_id', comment: 'Empresa a la que pertenece la agencia'})
   empId: number;
 
   @ManyToOne(() => CompanyEntity)
   @JoinColumn({name: 'emp_id', referencedColumnName: 'id'})
   empresa: CompanyEntity;
 
-  @CreateDateColumn({type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP', comment: 'Fecha y hora de creacion'})
+  @CreateDateColumn({name: 'fecha_creacion', type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP', comment: 'Fecha y hora de creacion'})
   fechaCreacion: Date;
 
-  @UpdateDateColumn({type: 'timestamptz', onUpdate: 'CURRENT_TIMESTAMP', comment: 'Fecha y hora de modificación'})
+  @UpdateDateColumn({name: 'fecha_modificacion', type: 'timestamptz', onUpdate: 'CURRENT_TIMESTAMP', comment: 'Fecha y hora de modificación'})
   fechaModificacion: Date;
 
-  @DeleteDateColumn({type: 'timestamptz', onUpdate: 'CURRENT_TIMESTAMP', comment: 'Fecha y hora de eliminación'})
+  @DeleteDateColumn({name : 'fecha_eliminacion', type: 'timestamptz', onUpdate: 'CURRENT_TIMESTAMP', comment: 'Fecha y hora de eliminación'})
   fechaEliminacion: Date;
 }

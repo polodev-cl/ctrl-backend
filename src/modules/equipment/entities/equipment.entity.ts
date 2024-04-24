@@ -5,10 +5,11 @@ import { EquipmentDiskTypeEnum } from '@modules/equipment/enums/equipment-disk-t
 import { EquipmentUseEnum }      from '@modules/equipment/enums/equipment-use.enum';
 import { EquipmentStatusEnum }   from '@modules/equipment/enums/equipment-status.enum';
 import { UserEntity }            from '@modules/user/entities/user.entity';
+import { IEquipment }            from '@modules/equipment/interfaces/equipment.interface';
 
 @Entity('ctrl_equipo')
 // Add default filter
-export class EquipmentEntity {
+export class EquipmentEntity implements IEquipment {
   @PrimaryGeneratedColumn({comment: 'Identificador del equipo'})
   id: number;
 
@@ -26,10 +27,10 @@ export class EquipmentEntity {
   })
   estado: EquipmentStatusEnum;
 
-  @Column({type: 'date', default: () => 'CURRENT_DATE', comment: 'Fecha de ingreso del equipo'})
+  @Column({name: 'fecha_ingreso', type: 'date', default: () => 'CURRENT_DATE', comment: 'Fecha de ingreso del equipo'})
   fechaIngreso: Date;
 
-  @Column({length: 50, comment: 'Orden de compra del equipo'})
+  @Column({name: 'orden_compra', length: 50, comment: 'Orden de compra del equipo'})
   ordenCompra: string;
 
   @Column({length: 50, nullable: true, comment: 'RUT de usuario asignado'})
@@ -38,10 +39,10 @@ export class EquipmentEntity {
   @Column({name: 'age_id', nullable: true, comment: 'Agencia a la que está vinculado el equipo'})
   agenciaId?: number;
 
-  @Column({length: 255, nullable: true, comment: 'Nemónico se obtiene de agencia'})
+  @Column({name: 'agencia_mnemonic', length: 255, nullable: true, comment: 'Nemónico se obtiene de agencia'})
   agenciaMnemonic?: string;
 
-  @Column({type: 'int', nullable: true, comment: 'DCP se obtiene de agencia'})
+  @Column({name: 'agencia_dpc', type: 'int', nullable: true, comment: 'DCP se obtiene de agencia'})
   agenciaDpc?: number;
 
   @Column({nullable: true, comment: 'Control interno o número de inventario'})
@@ -50,11 +51,8 @@ export class EquipmentEntity {
   @Column({length: 50, comment: 'Corresponde al tipo de equipo'})
   tipo: string;
 
-  @Column({length: 50, nullable: true, comment: 'Sistema operativo del equipo'})
+  @Column({name: 'sistema_operativo', length: 50, nullable: true, comment: 'Sistema operativo del equipo'})
   sistemaOperativo?: string;
-
-  @Column({length: 50, nullable: true, comment: 'Versión del sistema operativo del equipo'})
-  sistemaOperativoVersion?: string;
 
   @Column({
     type: 'enum',
@@ -82,7 +80,7 @@ export class EquipmentEntity {
   @Column({length: 50, nullable: true, comment: 'Procesador del equipo'})
   procesador?: string;
 
-  @Column({type: 'int', nullable: true, comment: 'GB de RAM del equipo'})
+  @Column({name: 'ram_gb', type: 'int', nullable: true, comment: 'GB de RAM del equipo'})
   ramGb?: number;
 
   @Column({
@@ -93,7 +91,7 @@ export class EquipmentEntity {
   })
   disco?: EquipmentDiskTypeEnum;
 
-  @Column({length: 50, nullable: true, comment: 'DDLL TBK del equipo con validación de formato'})
+  @Column({name: 'ddll_tbk', length: 50, nullable: true, comment: 'DDLL TBK del equipo con validación de formato'})
   ddllTbk?: string;
 
   @Column({length: 50, nullable: true, comment: 'Número de serie del equipo'})
@@ -105,7 +103,7 @@ export class EquipmentEntity {
   @Column({length: 50, comment: 'Ubicación descriptiva del equipo'})
   ubicacion: string;
 
-  @Column({type: 'int', default: 0, comment: 'Meses de garantía del equipo'})
+  @Column({name: 'garantia_meses', type: 'int', default: 0, comment: 'Meses de garantía del equipo'})
   garantiaMeses: number;
 
   @Column({name: 'usu_id_creacion', nullable: true, comment: 'ID del usuario que creó el registro'})

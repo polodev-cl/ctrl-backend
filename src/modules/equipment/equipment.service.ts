@@ -36,7 +36,7 @@ export class EquipmentService {
 
     console.log(whereFilter);
 
-    return await this._equipmentRepository.find({ where: whereFilter });
+    return await this._equipmentRepository.find({ where: whereFilter, relations: ['agencia', 'agencia.empresa', 'usuarioCreacion'] });
   }
 
   public async create(createEquipmentDto: CreateEquipmentDto) {
@@ -51,13 +51,7 @@ export class EquipmentService {
     return await this._equipmentRepository.softDelete(id);
   }
 
-  public async saveLog(id: number, userId: number, description: string) {
-    const tempHistory: EquipmentHistoryEntity = this._equipmentHistoryEntityRepository.create({
-      equipoId: id,
-      usuarioIdCreacion: userId,
-      descripcion: description,
-    });
-
-    return await this._equipmentHistoryEntityRepository.save(tempHistory);
+public async history(id: number) {
+    return await this._equipmentHistoryEntityRepository.find({ where: { equipoId: id } });
   }
 }

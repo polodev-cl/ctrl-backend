@@ -18,7 +18,7 @@ export class EquipmentHistoryEntity {
   @Column({type: 'varchar', length: 255, comment: 'Descripción de la acción realizada'})
   descripcion: string;
 
-  @CreateDateColumn({type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP', comment: 'Fecha y hora de creacion'})
+  @CreateDateColumn({name: 'fecha_creacion', type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP', comment: 'Fecha y hora de creacion'})
   fechaCreacion: Date;
 
   @ManyToOne(() => EquipmentEntity)
