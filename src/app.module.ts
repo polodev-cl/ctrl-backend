@@ -42,7 +42,7 @@ import { EquipmentSubscriber }         from '@modules/equipment/entities/events/
           database: configService.get('database.name'),
           subscribers: [ EquipmentSubscriber ],
           autoLoadEntities: true,
-          synchronize: true,
+          synchronize: false,
           logging: configService.get('environment') === 'dev',
           ssl: {
             rejectUnauthorized: false,
