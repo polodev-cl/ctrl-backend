@@ -44,9 +44,9 @@ import { EquipmentSubscriber }         from '@modules/equipment/entities/events/
           autoLoadEntities: true,
           synchronize: true,
           logging: configService.get('environment') === 'dev',
-          // ssl: {
-          //   rejectUnauthorized: false,
-          // },
+          ssl: {
+            rejectUnauthorized: false,
+          },
         };
       },
     }),

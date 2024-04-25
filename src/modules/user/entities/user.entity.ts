@@ -7,9 +7,9 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from "typeorm";
-import { RolEntity } from "../../rol/entities/rol.entity";
-import { CompanyEntity } from "@modules/company/entities/company.entity";
+}                        from 'typeorm';
+import { RolEntity }     from '../../rol/entities/rol.entity';
+import { CompanyEntity } from '@modules/company/entities/company.entity';
 
 @Entity("ctrl_usuario")
 export class UserEntity {
@@ -18,6 +18,9 @@ export class UserEntity {
 
   @Column({ type: "varchar", length: 255, comment: "Identificador del usuario Cognito" })
   cognito_id: string;
+
+  @Column({type: 'varchar', length: 50, comment: 'RUT del usuario'})
+  rut: string;
 
   @Column({ type: "boolean", default: true, comment: "Registro activo o inactivo" })
   activo: boolean;
