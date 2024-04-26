@@ -1,4 +1,13 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm';
 
 import { AgencyEntity }          from '@modules/agency/entities/agency.entity';
 import { EquipmentDiskTypeEnum } from '@modules/equipment/enums/equipment-disk-type.enum';
@@ -18,6 +27,9 @@ export class EquipmentEntity implements IEquipment {
 
   @UpdateDateColumn({type: 'timestamptz', onUpdate: 'CURRENT_TIMESTAMP', comment: 'Fecha y hora de modificación'})
   fechaModificacion: Date;
+
+  @DeleteDateColumn({name: 'fecha_eliminacion', type: 'timestamptz', nullable: true, comment: 'Fecha y hora de eliminación'})
+  fechaEliminacion: Date;
 
   @Column({
     type: 'enum',

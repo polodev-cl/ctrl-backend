@@ -1,11 +1,15 @@
-import { IsOptional, IsString, Length, IsNumber } from "class-validator";
+import { IsNumber, IsOptional, IsString, Length } from 'class-validator';
 
-import { UserEntity } from "../entities/user.entity";
+import { UserEntity } from '../entities/user.entity';
 
 export class CreateUserDto implements Partial<UserEntity> {
   @IsString()
   @Length(3, 255)
   cognito_id!: string;
+
+  @IsString()
+  @Length(3, 18)
+  rut!: string;
 
   @IsString()
   @Length(3, 255)

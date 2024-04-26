@@ -1,8 +1,7 @@
-import { Transform } from "class-transformer";
-import { IsNumber, IsOptional, IsString, Length, IsBoolean } from "class-validator";
-import { Type } from "class-transformer";
+import { Transform, Type }                                   from 'class-transformer';
+import { IsBoolean, IsNumber, IsOptional, IsString, Length } from 'class-validator';
 
-import { UserEntity } from "../entities/user.entity";
+import { UserEntity } from '../entities/user.entity';
 
 export class UserQueryDto implements Partial<UserEntity> {
   @IsNumber()
@@ -14,6 +13,11 @@ export class UserQueryDto implements Partial<UserEntity> {
   @Length(3, 255)
   @IsOptional()
   cognito_id?: string;
+
+  @IsString()
+  @Length(3, 18)
+  @IsOptional()
+  rut?: string;
 
   @IsBoolean()
   @Transform(({ value }) => (value === undefined ? undefined : value === "true"))

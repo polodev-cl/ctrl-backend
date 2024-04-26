@@ -1,9 +1,9 @@
-import { Type } from "class-transformer";
-import { IsEnum, IsNumber, IsOptional, IsString, Length } from "class-validator";
+import { Transform, Type }                                        from 'class-transformer';
+import { IsDate, IsEnum, IsNumber, IsOptional, IsString, Length } from 'class-validator';
 
-import { EquipmentEntity } from "../entities/equipment.entity";
-import { EquipmentUseEnum } from "@modules/equipment/enums/equipment-use.enum";
-import { EquipmentDiskTypeEnum } from "@modules/equipment/enums/equipment-disk-type.enum";
+import { EquipmentEntity }       from '../entities/equipment.entity';
+import { EquipmentUseEnum }      from '@modules/equipment/enums/equipment-use.enum';
+import { EquipmentDiskTypeEnum } from '@modules/equipment/enums/equipment-disk-type.enum';
 
 export class CreateEquipmentDto implements Partial<EquipmentEntity> {
   @IsNumber()
@@ -18,20 +18,25 @@ export class CreateEquipmentDto implements Partial<EquipmentEntity> {
   @IsOptional()
   rut?: string;
 
+  @IsDate()
+  @Transform(({value}) => new Date(value))
+  @IsOptional()
+  fechaIngreso?: Date;
+
   @IsNumber()
   @Type(() => Number)
   @IsOptional()
-  ageId?: number;
+  agenciaId?: number;
 
   @IsString()
   @Length(3, 255)
   @IsOptional()
-  ageNemonico?: string;
+  agenciaNemonico?: string;
 
   @IsNumber()
   @Type(() => Number)
   @IsOptional()
-  ageDpc?: number;
+  agenciaDpc?: number;
 
   @IsNumber()
   @Type(() => Number)
@@ -46,11 +51,6 @@ export class CreateEquipmentDto implements Partial<EquipmentEntity> {
   @Length(1, 50)
   @IsOptional()
   sistemaOperativo?: string;
-
-  @IsString()
-  @Length(3, 50)
-  @IsOptional()
-  sistemaOperativoVersion?: string;
 
   @IsEnum(EquipmentUseEnum)
   uso!: EquipmentUseEnum;
@@ -115,9 +115,5 @@ export class CreateEquipmentDto implements Partial<EquipmentEntity> {
 
   @IsNumber()
   @IsOptional()
-  idCreacionId?: number;
-
-  @IsNumber()
-  @IsOptional()
-  idModificacionId?: number;
+  usuarioIdCreacion?: number;
 }

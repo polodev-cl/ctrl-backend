@@ -1,9 +1,8 @@
-import { IsBoolean, IsNumber, IsOptional, IsString, Length } from "class-validator";
-import { Expose, Transform, Type } from "class-transformer";
+import { IsBoolean, IsNumber, IsOptional, IsString, Length } from 'class-validator';
+import { Transform, Type }                                   from 'class-transformer';
 
-import { AgencyEntity } from "@modules/agency/entities/agency.entity";
-import { CompanyEntity } from "@modules/company/entities/company.entity";
-import { ManyToOne } from "typeorm";
+import { AgencyEntity }  from '@modules/agency/entities/agency.entity';
+import { CompanyEntity } from '@modules/company/entities/company.entity';
 
 export class AgencyQueryDto implements Partial<AgencyEntity> {
   @IsNumber()
@@ -36,8 +35,5 @@ export class AgencyQueryDto implements Partial<AgencyEntity> {
   @IsOptional()
   empId?: number;
 
-  @ManyToOne(() => CompanyEntity)
   empresa?: CompanyEntity;
-
-
 }

@@ -1,5 +1,5 @@
 import { IsBoolean, IsNumber, IsOptional, IsString, Length } from 'class-validator';
-import { Type }                                              from 'class-transformer';
+import { Transform, Type }                                   from 'class-transformer';
 import { AgencyEntity }                                      from '../entities/agency.entity';
 
 
@@ -7,11 +7,13 @@ export class UpdateAgencyDto implements Partial<AgencyEntity> {
 
   @IsString()
   @Length(3, 255)
+  @Transform(({value}) => value.toUpperCase())
   @IsOptional()
   nombre?: string;
 
   @IsString()
   @Length(3, 50)
+  @Transform(({value}) => value.toUpperCase())
   @IsOptional()
   nemonico?: string;
 

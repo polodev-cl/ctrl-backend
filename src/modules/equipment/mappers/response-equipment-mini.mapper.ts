@@ -7,10 +7,13 @@ import { EquipmentEntity } from '@modules/equipment/entities/equipment.entity';
 export class ResponseEquipmentMiniMapper implements Partial<IEquipment> {
   public id: number;
   public nombre: string;
+  public tipo: string;
+  public rut: string;
+  public garantiaMeses: number;
   public inventario?: number;
   public modelo: string;
   public agencia?: Partial<AgencyEntity>;
-  public company?: Partial<CompanyEntity>;
+  public empresa?: Partial<CompanyEntity>;
   public usuario?: Partial<UserEntity>;
 
   constructor(values: ResponseEquipmentMiniMapper) {
@@ -20,26 +23,34 @@ export class ResponseEquipmentMiniMapper implements Partial<IEquipment> {
   static map(entity: EquipmentEntity): ResponseEquipmentMiniMapper {
 
     let agencia: Partial<AgencyEntity>;
-    let company: Partial<CompanyEntity>;
+    let empresa: Partial<CompanyEntity>;
     let usuario: Partial<UserEntity>;
 
     if (entity.agencia)
-      agencia = {id: entity.agenciaId, nemonico: entity.agenciaMnemonic, dpc: entity.agenciaDpc,};
+      agencia = {id: entity.agenciaId, nombre: entity.agencia.nombre, nemonico: entity.agenciaMnemonic, dpc: entity.agenciaDpc};
 
-    if (entity.agencia.empresa) company = {id: entity.agencia.empresa.id, razonSocial: entity.agencia.empresa.razonSocial,};
+    if (entity.agencia?.empresa) empresa = {
+      id: entity.agencia.empresa.id,
+      nombreCorto: entity.agencia.empresa.nombreCorto,
+      razonSocial: entity.agencia.empresa.razonSocial
+    };
 
     if (entity.usuarioCreacion) usuario = {
       id: entity.usuarioCreacion.id,
       nombres: entity.usuarioCreacion.nombres + ' ' + entity.usuarioCreacion.apellidos,
+      rut: entity.usuarioCreacion.rut
     };
 
     return new ResponseEquipmentMiniMapper({
       id: entity.id,
       nombre: entity.nombre,
+      tipo: entity.tipo,
+      rut: entity.rut,
+      garantiaMeses: entity.garantiaMeses,
       inventario: entity.inventario,
       modelo: entity.modelo,
       agencia,
-      company,
+      empresa,
       usuario,
     });
   }

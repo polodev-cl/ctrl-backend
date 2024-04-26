@@ -1,5 +1,5 @@
 import { IsBoolean, IsOptional, IsString, IsUrl, Length } from 'class-validator';
-import { Expose, Type }                                   from 'class-transformer';
+import { Transform, Type }                                from 'class-transformer';
 
 import { CompanyEntity } from '../entities/company.entity';
 
@@ -10,14 +10,17 @@ export class CreateCompanyDto implements Partial<CompanyEntity> {
 
   @IsString()
   @Length(3, 255)
+  @Transform(({value}) => value.toUpperCase())
   razonSocial!: string;
 
   @IsString()
   @Length(3, 50)
+  @Transform(({value}) => value.toUpperCase())
   nombreCorto!: string;
 
   @IsString()
   @Length(3, 255)
+  @Transform(({value}) => value.toUpperCase())
   giro!: string;
 
   @IsString()

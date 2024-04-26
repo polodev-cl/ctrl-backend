@@ -1,15 +1,6 @@
-import {
-  AfterInsert,
-  AfterSoftRemove,
-  AfterUpdate,
-  EntitySubscriberInterface,
-  EventSubscriber,
-  InsertEvent,
-  SoftRemoveEvent,
-  UpdateEvent
-}                                 from 'typeorm';
-import { EquipmentHistoryEntity } from '@modules/equipment/entities/equipment-history.entity';
-import { EquipmentEntity }        from '@modules/equipment/entities/equipment.entity';
+import { AfterInsert, AfterUpdate, EntitySubscriberInterface, EventSubscriber, InsertEvent, UpdateEvent } from 'typeorm';
+import { EquipmentHistoryEntity }                                                                         from '@modules/equipment/entities/equipment-history.entity';
+import { EquipmentEntity }                                                                                from '@modules/equipment/entities/equipment.entity';
 
 @EventSubscriber()
 export class EquipmentSubscriber implements EntitySubscriberInterface {
@@ -32,30 +23,42 @@ export class EquipmentSubscriber implements EntitySubscriberInterface {
   }
 
   @AfterUpdate()
-  afterUpdate(event: UpdateEvent<any>) {
-    const {entity, manager} = event;
+  async afterUpdate(event: UpdateEvent<any>) {
+    const {entity, manager, databaseEntity, updatedColumns} = event;
 
-    const historyRepository = manager.getRepository(EquipmentHistoryEntity);
-    const tempHistory: EquipmentHistoryEntity = historyRepository.create({
-      equipoId: entity.id,
-      usuarioIdCreacion: entity.usuarioIdCreacion,
-      descripcion: 'Equipo actualizado',
-    });
+    if (updatedColumns && updatedColumns.length > 0) {
+      let description = 'Equipo actualizado: ';
 
-    historyRepository.save(tempHistory);
+      for (const updatedColumn of updatedColumns) {
+        const currentValue = entity[updatedColumn.propertyName];
+        const previousValue = databaseEntity[updatedColumn.propertyName];
+        description += `\n${ updatedColumn.propertyPath } cambió de ${ previousValue } a ${ currentValue }. `;
+      }
+
+      const historyRepository = manager.getRepository(EquipmentHistoryEntity);
+
+      const tempHistory: EquipmentHistoryEntity = historyRepository.create({
+        equipoId: entity.id,
+        usuarioIdCreacion: entity.usuarioIdCreacion,
+        descripcion: description.trim(),
+      });
+
+      await historyRepository.save(tempHistory);
+    }
   }
 
-  @AfterSoftRemove()
-  afterSoftRemove(event: SoftRemoveEvent<any>) {
-    const {entity, manager} = event;
-
-    const historyRepository = manager.getRepository(EquipmentHistoryEntity);
-    const tempHistory: EquipmentHistoryEntity = historyRepository.create({
-      equipoId: entity.id,
-      usuarioIdCreacion: entity.usuarioIdCreacion,
-      descripcion: 'Equipo eliminado',
-    });
-
-    historyRepository.save(tempHistory);
-  }
+  // @BeforeSoftRemove()
+  // afterSoftRemove(event: SoftRemoveEvent<any>) {
+  //   const {entity, manager} = event;
+  //   console.log('Soft remove event', event);
+  //
+  //   const historyRepository = manager.getRepository(EquipmentHistoryEntity);
+  //   const tempHistory: EquipmentHistoryEntity = historyRepository.create({
+  //     equipoId: entity.id,
+  //     usuarioIdCreacion: entity.usuarioIdCreacion,
+  //     descripcion: 'Equipo eliminado',
+  //   });
+  //
+  //   historyRepository.save(tempHistory);
+  // }
 }

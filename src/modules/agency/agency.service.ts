@@ -1,10 +1,10 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { AgencyEntity } from "./entities/agency.entity";
-import { Equal, FindOptionsWhere, ILike, Repository } from "typeorm";
-import { AgencyQueryDto } from "./dto/agency-query.dto";
-import { CreateAgencyDto } from "./dto/create-agency.dto";
-import { UpdateAgencyDto } from "./dto/update-agency.dto";
+import { Injectable }                                 from '@nestjs/common';
+import { InjectRepository }                           from '@nestjs/typeorm';
+import { AgencyEntity }                               from './entities/agency.entity';
+import { Equal, FindOptionsWhere, ILike, Repository } from 'typeorm';
+import { AgencyQueryDto }                             from './dto/agency-query.dto';
+import { CreateAgencyDto }                            from './dto/create-agency.dto';
+import { UpdateAgencyDto }                            from './dto/update-agency.dto';
 
 @Injectable()
 export class AgencyService {
@@ -18,6 +18,7 @@ export class AgencyService {
 
     if (queryParams.activo !== undefined) whereFilter["activo"] = Equal(queryParams.activo);
     if (queryParams.id) whereFilter["id"] = Equal(queryParams.id);
+    if (queryParams.empId) whereFilter['empId'] = Equal(queryParams.empId);
 
     console.log(whereFilter);
 

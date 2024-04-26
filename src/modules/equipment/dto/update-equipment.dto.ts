@@ -54,11 +54,6 @@ export class UpdateEquipmentDto implements Partial<EquipmentEntity> {
   @IsOptional()
   sistemaOperativo?: string;
 
-  @IsString()
-  @Length(1, 50)
-  @IsOptional()
-  sistemaOperativoVersion?: string;
-
   @IsEnum(EquipmentUseEnum)
   @IsOptional()
   uso?: EquipmentUseEnum;
