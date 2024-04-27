@@ -1,5 +1,5 @@
 import { IsBoolean, IsNumber, IsOptional, IsString, Length } from 'class-validator';
-import { Expose, Transform, Type }                           from 'class-transformer';
+import { Transform, Type }                                   from 'class-transformer';
 
 import { CompanyEntity } from '../entities/company.entity';
 
