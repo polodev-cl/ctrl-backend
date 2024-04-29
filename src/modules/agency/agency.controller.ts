@@ -2,10 +2,11 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestj
 
 import { ResponseAgencySelectorMapper } from '@modules/agency/mappers/response-agency-selector.mapper';
 
-import { AgencyService }   from './agency.service';
-import { AgencyQueryDto }  from './dto/agency-query.dto';
-import { CreateAgencyDto } from './dto/create-agency.dto';
-import { UpdateAgencyDto } from './dto/update-agency.dto';
+import { AgencyService }        from './agency.service';
+import { AgencyQueryDto }       from './dto/agency-query.dto';
+import { CreateAgencyDto }      from './dto/create-agency.dto';
+import { UpdateAgencyDto }      from './dto/update-agency.dto';
+import { ResponseAgencyMapper } from '@modules/agency/response-agency.mapper';
 
 @Controller('agency')
 export class AgencyController {
@@ -13,7 +14,8 @@ export class AgencyController {
 
   @Get()
   public async list(@Query() query: AgencyQueryDto) {
-    return await this._agencyService.list(query);
+    return await this._agencyService.list(query)
+      .then((agencies) => agencies.map(ResponseAgencyMapper.map));
   }
 
   @Get('/selector')

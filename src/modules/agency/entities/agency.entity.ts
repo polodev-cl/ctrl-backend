@@ -1,9 +1,21 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  Unique,
+  UpdateDateColumn
+} from 'typeorm';
 
 import { CompanyEntity } from '@modules/company/entities/company.entity';
+import { IAgency }       from '@modules/agency/interfaces/agency.interface';
 
 @Entity('ctrl_agencia')
-export class AgencyEntity {
+@Unique([ 'nombre', 'empId' ])
+export class AgencyEntity implements IAgency {
   @PrimaryGeneratedColumn({comment: 'Identificador de la agencia'})
   id: number;
 

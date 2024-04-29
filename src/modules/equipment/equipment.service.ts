@@ -51,7 +51,6 @@ export class EquipmentService {
   }
 
   public async create(createEquipmentDto: CreateEquipmentDto) {
-    console.log(createEquipmentDto);
     const equipment = await this._equipmentRepository.findOne({
       where: [
         {inventario: createEquipmentDto.inventario},
@@ -78,6 +77,10 @@ export class EquipmentService {
   }
 
   public async delete(id: number) {
+    const count = await this._equipmentRepository.count({where: {id}});
+
+    if (count === 0) throw new NotFoundException('Equipo no encontrado');
+
     return await this._equipmentRepository.softDelete(id);
   }
 
