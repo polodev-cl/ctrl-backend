@@ -1,6 +1,7 @@
 import { AfterInsert, AfterUpdate, EntitySubscriberInterface, EventSubscriber, InsertEvent, UpdateEvent } from 'typeorm';
 import { EquipmentHistoryEntity }                                                                         from '@modules/equipment/entities/equipment-history.entity';
 import { EquipmentEntity }                                                                                from '@modules/equipment/entities/equipment.entity';
+import { isDate }                                                                                         from 'class-validator';
 
 @EventSubscriber()
 export class EquipmentSubscriber implements EntitySubscriberInterface {
@@ -24,14 +25,21 @@ export class EquipmentSubscriber implements EntitySubscriberInterface {
 
   @AfterUpdate()
   async afterUpdate(event: UpdateEvent<any>) {
+    console.log(event);
     const {entity, manager, databaseEntity, updatedColumns} = event;
 
     if (updatedColumns && updatedColumns.length > 0) {
       let description = 'Equipo actualizado: ';
 
       for (const updatedColumn of updatedColumns) {
-        const currentValue = entity[updatedColumn.propertyName];
-        const previousValue = databaseEntity[updatedColumn.propertyName];
+        let currentValue = entity[updatedColumn.propertyName];
+        let previousValue = databaseEntity[updatedColumn.propertyName];
+
+        if (isDate(previousValue))
+          previousValue = previousValue.toISOString();
+        if (isDate(currentValue))
+          currentValue = currentValue.toISOString();
+
         description += `\n${ updatedColumn.propertyPath } cambió de ${ previousValue } a ${ currentValue }. `;
       }
 

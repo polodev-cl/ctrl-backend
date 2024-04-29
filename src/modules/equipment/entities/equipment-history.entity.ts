@@ -2,10 +2,11 @@ import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGenerat
 
 import { UserEntity } from '@modules/user/entities/user.entity';
 
-import { EquipmentEntity } from './equipment.entity';
+import { EquipmentEntity }   from './equipment.entity';
+import { IEquipmentHistory } from '@modules/equipment/interfaces/equipment-history.interface';
 
 @Entity('ctrl_historial_equipo')
-export class EquipmentHistoryEntity {
+export class EquipmentHistoryEntity implements IEquipmentHistory {
   @PrimaryGeneratedColumn({comment: 'Identificador del historial del equipo'})
   id: number;
 
@@ -13,7 +14,7 @@ export class EquipmentHistoryEntity {
   equipoId: number;
 
   @Column({name: 'usu_id_creacion', comment: 'ID del usuario que realizó la acción', nullable: true})
-  usuarioIdCreacion: number;
+  usuarioIdCreacion?: number;
 
   @Column({type: 'varchar', length: 255, comment: 'Descripción de la acción realizada'})
   descripcion: string;

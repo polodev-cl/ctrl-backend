@@ -1,5 +1,5 @@
-import { Type }                                                   from 'class-transformer';
-import { IsDate, IsEnum, IsNumber, IsOptional, IsString, Length } from 'class-validator';
+import { Type }                                           from 'class-transformer';
+import { IsEnum, IsNumber, IsOptional, IsString, Length } from 'class-validator';
 
 import { EquipmentEntity }       from '../entities/equipment.entity';
 import { EquipmentUseEnum }      from '@modules/equipment/enums/equipment-use.enum';
@@ -10,7 +10,6 @@ export class UpdateEquipmentDto implements Partial<EquipmentEntity> {
   @IsOptional()
   estado?: number;
 
-  @IsDate()
   @IsOptional()
   fechaIngreso?: Date;
 
@@ -27,22 +26,17 @@ export class UpdateEquipmentDto implements Partial<EquipmentEntity> {
   @IsNumber()
   @Type(() => Number)
   @IsOptional()
-  ageId?: number;
+  agenciaId?: number;
 
   @IsString()
-  @Length(3, 255)
+  @Length(1, 255)
   @IsOptional()
-  ageNemonico?: string;
+  agenciaNemonico?: string;
 
   @IsNumber()
   @Type(() => Number)
   @IsOptional()
-  ageDpc?: number;
-
-  @IsNumber()
-  @Type(() => Number)
-  @IsOptional()
-  inventario?: number;
+  agenciaDpc?: number;
 
   @IsString()
   @Length(2, 50)
@@ -59,19 +53,14 @@ export class UpdateEquipmentDto implements Partial<EquipmentEntity> {
   uso?: EquipmentUseEnum;
 
   @IsString()
-  @Length(3, 50)
+  @Length(1, 50)
   @IsOptional()
   marca?: string;
 
   @IsString()
-  @Length(3, 50)
+  @Length(1, 50)
   @IsOptional()
   modelo?: string;
-
-  @IsString()
-  @Length(0, 50)
-  @IsOptional()
-  mac?: string;
 
   @IsString()
   @Length(3, 50)
@@ -105,11 +94,6 @@ export class UpdateEquipmentDto implements Partial<EquipmentEntity> {
   @IsString()
   @Length(3, 50)
   @IsOptional()
-  serie?: string;
-
-  @IsString()
-  @Length(3, 50)
-  @IsOptional()
   encargadoAgencia?: string;
 
   @IsString()
@@ -121,12 +105,4 @@ export class UpdateEquipmentDto implements Partial<EquipmentEntity> {
   @Type(() => Number)
   @IsOptional()
   garantiaMeses?: number;
-
-  @IsNumber()
-  @IsOptional()
-  idCreacionId?: number;
-
-  @IsNumber()
-  @IsOptional()
-  idModificacionId?: number;
 }

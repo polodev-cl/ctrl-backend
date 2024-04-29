@@ -1,26 +1,25 @@
-import { configure as serverlessExpress } from "@vendia/serverless-express";
-import { NestFactory } from "@nestjs/core";
-import { AppModule } from "./app.module";
-import { ValidationPipe } from "@nestjs/common";
-import * as express from "express";
+import { ValidationPipe } from '@nestjs/common';
+import { NestFactory }    from '@nestjs/core';
+
+import { configure as serverlessExpress } from '@vendia/serverless-express';
+
+import { AppModule } from './app.module';
 
 let cachedServer;
 
 const bootstrap = async () => {
-  const app = express();
-
   const nestApp = await NestFactory.create(AppModule, {
-    logger: process.env.ENV === "prod" ? ["warn", "error"] : ["debug", "log", "verbose"],
+    logger: process.env.ENV === 'prod' ? [ 'warn', 'error' ] : [ 'debug', 'log', 'verbose' ],
   });
 
-  nestApp.setGlobalPrefix("api");
+  nestApp.setGlobalPrefix('api');
   nestApp.enableCors({
-    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
+    methods: [ 'GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS' ],
   });
   nestApp.useGlobalPipes(
     new ValidationPipe({
       transform: true,
-      // whitelist: true,
+      whitelist: true,
       // forbidNonWhitelisted: true
     })
   );
@@ -40,31 +39,30 @@ export const handler = async (event, context) => {
   return cachedServer(event, context);
 };
 
-// import { NestFactory } from "@nestjs/core";
-// import { ValidationPipe } from "@nestjs/common";
-// import { ConfigService } from "@nestjs/config";
-
-// import { AppModule } from "./app.module";
-// import { HttpExceptionFilter } from "./common/filters/http-exception.filter";
-// import { HttpResponseInterceptor } from "./common/interceptors/http-response.interceptor";
-
+// import { NestFactory }    from '@nestjs/core';
+// import { ValidationPipe } from '@nestjs/common';
+// import { ConfigService }  from '@nestjs/config';
+//
+// import { AppModule }           from './app.module';
+// import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+//
 // async function bootstrap() {
 //   const app = await NestFactory.create(AppModule);
 //   const configService = app.get(ConfigService);
-//   app.setGlobalPrefix("api");
+//   app.setGlobalPrefix('api');
 //   app.enableCors();
 //   app.useGlobalFilters(new HttpExceptionFilter());
-//   app.useGlobalInterceptors(new HttpResponseInterceptor());
-
+//   // app.useGlobalInterceptors(new HttpResponseInterceptor());
+//
 //   app.useGlobalPipes(
 //     new ValidationPipe({
 //       transform: true,
-//       // whitelist: true,
+//       whitelist: true,
 //       // forbidNonWhitelisted: true
 //     })
 //   );
-
-//   await app.listen(configService.get("port") || 3000);
+//
+//   await app.listen(configService.get('port') || 3000);
 // }
-
+//
 // bootstrap().then();

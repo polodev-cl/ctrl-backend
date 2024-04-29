@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseFloatPipe, Patch, Post, Query } from '@nestjs/common';
 
-import { ResponseEquipmentMiniMapper } from '@modules/equipment/mappers/response-equipment-mini.mapper';
+import { ResponseEquipmentMiniMapper }    from '@modules/equipment/mappers/response-equipment-mini.mapper';
+import { ResponseEquipmentHistoryMapper } from '@modules/equipment/mappers/response-equipment-history.mapper';
 
 import { EquipmentService }   from './equipment.service';
 import { CreateEquipmentDto } from './dto/create-equipment.dto';
@@ -22,9 +23,16 @@ export class EquipmentController {
       .then((data) => data.map(ResponseEquipmentMiniMapper.map));
   }
 
+  @Get(':id')
+  public async getById(@Param('id', ParseFloatPipe) id: number) {
+    console.log('id', id);
+    return await this._equipmentService.getById(id);
+  }
+
   @Get(':id/history')
   public async history(@Param('id') id: number) {
-    return await this._equipmentService.history(id);
+    return await this._equipmentService.history(id)
+      .then((data) => data.map(ResponseEquipmentHistoryMapper.map));
   }
 
   @Post()

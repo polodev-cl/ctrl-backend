@@ -106,8 +106,8 @@ export class EquipmentEntity implements IEquipment {
   @Column({name: 'ddll_tbk', length: 50, nullable: true, comment: 'DDLL TBK del equipo con validación de formato'})
   ddllTbk?: string;
 
-  @Column({length: 50, nullable: true, comment: 'Número de serie del equipo'})
-  serie?: string;
+  @Column({length: 50, comment: 'Número de serie del equipo'})
+  serie: string;
 
   @Column({length: 50, comment: 'Encargado de la agencia'})
   encargadoAgencia: string;

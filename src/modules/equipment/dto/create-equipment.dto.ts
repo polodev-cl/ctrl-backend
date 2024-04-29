@@ -1,5 +1,5 @@
-import { Transform, Type }                                        from 'class-transformer';
-import { IsDate, IsEnum, IsNumber, IsOptional, IsString, Length } from 'class-validator';
+import { Type }                                           from 'class-transformer';
+import { IsEnum, IsNumber, IsOptional, IsString, Length } from 'class-validator';
 
 import { EquipmentEntity }       from '../entities/equipment.entity';
 import { EquipmentUseEnum }      from '@modules/equipment/enums/equipment-use.enum';
@@ -18,8 +18,6 @@ export class CreateEquipmentDto implements Partial<EquipmentEntity> {
   @IsOptional()
   rut?: string;
 
-  @IsDate()
-  @Transform(({value}) => new Date(value))
   @IsOptional()
   fechaIngreso?: Date;
 
@@ -56,7 +54,7 @@ export class CreateEquipmentDto implements Partial<EquipmentEntity> {
   uso!: EquipmentUseEnum;
 
   @IsString()
-  @Length(0, 50)
+  @Length(1, 50)
   marca!: string;
 
   @IsString()
@@ -74,7 +72,7 @@ export class CreateEquipmentDto implements Partial<EquipmentEntity> {
   ip?: string;
 
   @IsString()
-  @Length(3, 50)
+  @Length(1, 50)
   nombre!: string;
 
   @IsString()

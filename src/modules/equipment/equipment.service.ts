@@ -1,11 +1,11 @@
-import { Injectable }                                 from '@nestjs/common';
-import { InjectRepository }                           from '@nestjs/typeorm';
-import { EquipmentEntity }                            from './entities/equipment.entity';
-import { Equal, FindOptionsWhere, ILike, Repository } from 'typeorm';
-import { EquipmentQueryDto }                          from './dto/equipment-query.dto';
-import { CreateEquipmentDto }                         from './dto/create-equipment.dto';
-import { UpdateEquipmentDto }                         from './dto/update-equipment.dto';
-import { EquipmentHistoryEntity }                     from '@modules/equipment/entities/equipment-history.entity';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository }                                 from '@nestjs/typeorm';
+import { EquipmentEntity }                                  from './entities/equipment.entity';
+import { Equal, FindOptionsWhere, ILike, Repository }       from 'typeorm';
+import { EquipmentQueryDto }                                from './dto/equipment-query.dto';
+import { CreateEquipmentDto }                               from './dto/create-equipment.dto';
+import { UpdateEquipmentDto }                               from './dto/update-equipment.dto';
+import { EquipmentHistoryEntity }                           from '@modules/equipment/entities/equipment-history.entity';
 
 @Injectable()
 export class EquipmentService {
@@ -39,12 +39,42 @@ export class EquipmentService {
     return await this._equipmentRepository.find({where: whereFilter, relations: [ 'agencia', 'agencia.empresa', 'usuarioCreacion' ]});
   }
 
+  public async getById(id: number) {
+    const equipment = await this._equipmentRepository.findOne({
+      where: {id},
+      relations: [ 'agencia', 'agencia.empresa', 'usuarioCreacion' ]
+    });
+
+    if (!equipment) throw new NotFoundException('Equipo no encontrado');
+
+    return equipment;
+  }
+
   public async create(createEquipmentDto: CreateEquipmentDto) {
+    console.log(createEquipmentDto);
+    const equipment = await this._equipmentRepository.findOne({
+      where: [
+        {inventario: createEquipmentDto.inventario},
+        {mac: createEquipmentDto.mac},
+        {serie: createEquipmentDto.serie}
+      ]
+    });
+
+    if (equipment) throw new ConflictException('Equipo ya existe por inventario, mac o serie');
+
     return await this._equipmentRepository.save(createEquipmentDto);
   }
 
   public async update(id: number, updateEquipmentDto: UpdateEquipmentDto) {
-    return await this._equipmentRepository.update(id, updateEquipmentDto as Partial<EquipmentEntity>);
+    const equipment = await this._equipmentRepository.findOne({where: {id}});
+
+    if (!equipment) throw new NotFoundException('Equipo no encontrado');
+
+    return await this._equipmentRepository.save({
+      id,
+      ...equipment,
+      ...updateEquipmentDto
+    });
   }
 
   public async delete(id: number) {
@@ -52,6 +82,6 @@ export class EquipmentService {
   }
 
   public async history(id: number) {
-    return await this._equipmentHistoryEntityRepository.find({where: {equipoId: id}});
+    return await this._equipmentHistoryEntityRepository.find({where: {equipoId: id}, relations: [ 'usuario' ]});
   }
 }

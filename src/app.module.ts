@@ -1,14 +1,16 @@
 import { Module }                      from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule }               from '@nestjs/typeorm';
-import { AgencyModule }                from '@modules/agency/agency.module';
-import { CompanyModule }               from '@modules/company/company.module';
-import { EquipmentModule }             from '@modules/equipment/equipment.module';
-import { RolModule }                   from '@modules/rol/rol.module';
-import { UserModule }                  from '@modules/user/user.module';
-import { AppController }               from './app.controller';
-import { AppService }                  from './app.service';
-import { EquipmentSubscriber }         from '@modules/equipment/entities/events/equipment.subscriber';
+
+import { AgencyModule }        from '@modules/agency/agency.module';
+import { CompanyModule }       from '@modules/company/company.module';
+import { EquipmentSubscriber } from '@modules/equipment/entities/events/equipment.subscriber';
+import { EquipmentModule }     from '@modules/equipment/equipment.module';
+import { RolModule }           from '@modules/rol/rol.module';
+import { UserModule }          from '@modules/user/user.module';
+
+import { AppController } from './app.controller';
+import { AppService }    from './app.service';
 
 @Module({
   imports: [
