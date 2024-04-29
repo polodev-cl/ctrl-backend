@@ -1,13 +1,13 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository }              from '@nestjs/typeorm';
 
-import { FindOptionsWhere } from "typeorm/find-options/FindOptionsWhere";
-import { Equal, ILike, Repository } from "typeorm";
+import { FindOptionsWhere }         from 'typeorm/find-options/FindOptionsWhere';
+import { Equal, ILike, Repository } from 'typeorm';
 
-import { CompanyEntity } from "@modules/company/entities/company.entity";
-import { CompanyQueryDto } from "@modules/company/dto/company-query.dto";
-import { CreateCompanyDto } from "@modules/company/dto/create-company.dto";
-import { UpdateCompanyDto } from "./dto/update-company.dto";
+import { CompanyEntity }    from '@modules/company/entities/company.entity';
+import { CompanyQueryDto }  from '@modules/company/dto/company-query.dto';
+import { CreateCompanyDto } from '@modules/company/dto/create-company.dto';
+import { UpdateCompanyDto } from './dto/update-company.dto';
 
 @Injectable()
 export class CompanyService {
@@ -26,6 +26,14 @@ export class CompanyService {
     console.log(whereFilter);
 
     return await this._companyRepository.find({ where: whereFilter });
+  }
+
+  public async findById(id: number) {
+    const company = await this._companyRepository.findOne({where: {id}});
+
+    if (!company) throw new NotFoundException('EMPRESA_NO_ENCONTRADA');
+
+    return company;
   }
 
   public async create(createCompanyDto: CreateCompanyDto) {
