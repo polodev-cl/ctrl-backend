@@ -4,20 +4,12 @@ import { UserEntity } from '../entities/user.entity';
 
 export class CreateUserDto implements Partial<UserEntity> {
   @IsString()
-  @Length(3, 255)
-  cognito_id!: string;
-
-  @IsString()
   @Length(3, 18)
   rut!: string;
 
   @IsString()
   @Length(3, 255)
   email!: string;
-
-  @IsString()
-  @Length(3, 50)
-  contrasena!: string;
 
   @IsString()
   @Length(3, 255)
@@ -29,11 +21,7 @@ export class CreateUserDto implements Partial<UserEntity> {
 
   @IsNumber()
   @IsOptional()
-  usuarioCreacionId?: number;
-
-  @IsNumber()
-  @IsOptional()
-  usuarioModificacionId?: number;
+  usuarioCreacionId?: number
 
   @IsNumber()
   @IsOptional()

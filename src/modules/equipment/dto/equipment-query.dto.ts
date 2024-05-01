@@ -37,7 +37,7 @@ export class EquipmentQueryDto implements Partial<EquipmentEntity> {
   @IsString()
   @Length(3, 255)
   @IsOptional()
-  agenciaNemonico?: string;
+  agenciaMnemonic?: string;
 
   @IsNumber()
   @Type(() => Number)

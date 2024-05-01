@@ -3,11 +3,11 @@ import { UserService } from "./user.service";
 import { UserQueryDto } from "./dto/user-query.dto";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import { AxiosService } from "./axios.service";
+
 
 @Controller("user")
 export class UserController {
-  constructor(private readonly _userService: UserService, private readonly axiosService: AxiosService) {}
+  constructor(private readonly _userService: UserService) {}
 
   @Get()
   public async list(@Query() query: UserQueryDto) {
@@ -15,22 +15,7 @@ export class UserController {
   }
   @Post()
   public async create(@Body() createUserDto: CreateUserDto) {
-    const newUser = await this._userService.create(createUserDto);
-    const lambdaResponse = await this.axiosService.createUser({
-      id: newUser.id,
-      nombres: newUser.nombres,
-      email: newUser.email,
-    });
-    const updateUserDto: UpdateUserDto = {
-      rut: newUser.rut,
-      cognito_id: lambdaResponse.userId
-    };
-    await this._userService.update(newUser.id, updateUserDto);
-    return {
-      message: "User successfully created and Cognito ID updated",
-      userId: lambdaResponse.userId,
-      temporaryPassword: lambdaResponse.temporaryPassword
-    };
+    return await this._userService.create(createUserDto);
   }
 
   @Patch(":id")

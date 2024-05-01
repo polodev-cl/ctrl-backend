@@ -31,7 +31,7 @@ export class UpdateEquipmentDto implements Partial<EquipmentEntity> {
   @IsString()
   @Length(1, 255)
   @IsOptional()
-  agenciaNemonico?: string;
+  agenciaMnemonic?: string;
 
   @IsNumber()
   @Type(() => Number)

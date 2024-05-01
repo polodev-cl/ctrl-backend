@@ -16,7 +16,7 @@ export class UserEntity {
   @PrimaryGeneratedColumn({ comment: "Identificador del usuario" })
   id: number;
 
-  @Column({ type: "varchar", length: 255, comment: "Identificador del usuario Cognito" })
+  @Column({ type: "varchar", length: 255, comment: "Identificador del usuario Cognito", nullable: true })
   cognito_id: string;
 
   @Column({type: 'varchar', length: 50, comment: 'RUT del usuario'})
@@ -28,7 +28,7 @@ export class UserEntity {
   @Column({ type: "varchar", length: 50, comment: "Email del usuario" })
   email: string;
 
-  @Column({ type: "varchar", length: 50, comment: "Contraseña codificada en MD5" })
+  @Column({ type: "varchar", length: 50, comment: "Contraseña codificada en MD5", nullable: true })
   contrasena: string;
 
   @Column({ type: "varchar", length: 255, comment: "Nombres del usuario" })
