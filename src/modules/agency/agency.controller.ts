@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseFloatPipe, Patch, Post, Query } from '@nestjs/common';
 
 import { ResponseAgencySelectorMapper } from '@modules/agency/mappers/response-agency-selector.mapper';
 
@@ -16,6 +16,11 @@ export class AgencyController {
   public async list(@Query() query: AgencyQueryDto) {
     return await this._agencyService.list(query)
       .then((agencies) => agencies.map(ResponseAgencyMapper.map));
+  }
+
+  @Get(':id')
+  public async findOne(@Param('id', ParseFloatPipe) id: number) {
+    return await this._agencyService.findById(id).then(ResponseAgencyMapper.map);
   }
 
   @Get('/selector')

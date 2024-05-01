@@ -25,6 +25,14 @@ export class AgencyService {
     return await this._agencyRepository.find({where: whereFilter, relations: [ 'empresa' ]});
   }
 
+  public async findById(id: number) {
+    const agency = await this._agencyRepository.findOne({where: {id: id}, relations: [ 'empresa' ]});
+
+    if (!agency) throw new NotFoundException('La agencia no existe');
+
+    return agency;
+  }
+
   public async create(createCompanyDto: CreateAgencyDto) {
     const count = await this._agencyRepository.count({where: {nombre: createCompanyDto.nombre, empId: createCompanyDto.empId}});
 
