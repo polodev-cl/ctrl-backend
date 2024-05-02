@@ -46,7 +46,7 @@ import { AwsModule }     from '@modules/aws/aws.module';
           subscribers: [ EquipmentSubscriber ],
           autoLoadEntities: true,
           synchronize: false,
-          logging: configService.get('environment') === 'dev',
+          // logging: configService.get('environment') === 'dev',
           ssl: {
             rejectUnauthorized: false,
           },

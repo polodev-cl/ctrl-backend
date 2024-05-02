@@ -1,5 +1,5 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository }                                 from '@nestjs/typeorm';
+import { ConflictException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository }                                                     from '@nestjs/typeorm';
 
 import { Equal, FindOptionsWhere, ILike, In, Repository } from 'typeorm';
 
@@ -19,7 +19,7 @@ export class EquipmentService {
   constructor(
     @InjectRepository(EquipmentEntity) private readonly _equipmentRepository: Repository<EquipmentEntity>,
     @InjectRepository(EquipmentHistoryEntity) private readonly _equipmentHistoryEntityRepository: Repository<EquipmentHistoryEntity>,
-    private readonly _companyService: CompanyService,
+    @Inject(forwardRef(() => CompanyService)) private readonly _companyService: CompanyService,
     private readonly _agencyService: AgencyService
   ) {}
 
@@ -57,6 +57,18 @@ export class EquipmentService {
     if (!equipment) throw new NotFoundException('Equipo no encontrado');
 
     return equipment;
+  }
+
+  public async companyHaveEquipmentCount(empId: number) {
+    const equipmentCount = await this._equipmentRepository.count({
+      where: {
+        agencia: {
+          empId: empId
+        }
+      }
+    });
+
+    return equipmentCount > 0;
   }
 
   public async create(createEquipmentDto: CreateEquipmentDto) {
@@ -99,7 +111,7 @@ export class EquipmentService {
 
   public async validateMassiveUpload(data: CreateMassiveDto[], errors: Set<string> = new Set<string>()) {
     data.forEach((record, index) => {
-      const requiredFields = [ 'empresa', 'agenciaNombre' ] as (keyof CreateMassiveDto)[];
+      const requiredFields = [ 'empresa', 'agencia' ] as (keyof CreateMassiveDto)[];
       for (const field of requiredFields) {
         if (!record[field]) {
           errors.add(`Registro ${ index + 1 }: ${ field } es requerido`);
@@ -116,12 +128,12 @@ export class EquipmentService {
       const record = data[i];
 
       companies.add(record.empresa.trim());
-      agencies.add(`${ record.empresa.trim() };${ record.agenciaNombre.trim() }`);
+      agencies.add(`${ record.empresa.trim() };${ record.agencia.trim() }`);
     }
 
-    const companiesList = await this._companyService.listBy({nombreCorto: Array.from(companies)});
+    const companiesList = await this._companyService.listBy({nombreCorto: In(Array.from(companies))});
     const agenciesList = await this._agencyService.listBy({
-      nombre: Array.from(agencies).map((item: string) => item.split(';')[1])
+      nombre: In(Array.from(agencies).map((item: string) => item.split(';')[1]))
     });
 
     for (let i = 0; i < data.length; i++) {
@@ -129,12 +141,12 @@ export class EquipmentService {
       const company = companiesList.find((item) => item.nombreCorto === record.empresa.trim());
       const agency = agenciesList
         .find((item) =>
-          item.nombre === record.agenciaNombre.trim() &&
+          item.nombre === record.agencia.trim() &&
           item.empresa.nombreCorto === record.empresa.trim()
         );
 
       if (!company) errors.add(`Empresa ${ record.empresa } no encontrada`);
-      if (!agency) errors.add(`Agencia ${ record.agenciaNombre } no encontrada`);
+      if (!agency) errors.add(`Agencia ${ record.agencia } no encontrada`);
 
       data[i].company = company;
       data[i].agency = agency;

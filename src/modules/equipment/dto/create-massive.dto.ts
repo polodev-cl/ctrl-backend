@@ -5,7 +5,7 @@ import { IEquipment }    from '@modules/equipment/interfaces/equipment.interface
 export class CreateMassiveDto {
   public empresa: string;
   public rutUsuario: string;
-  public agenciaNombre: string;
+  public agencia: string;
   // public nemonico: string;
   // public dpc: string;
   public caja: string;
@@ -15,7 +15,7 @@ export class CreateMassiveDto {
   public modelo: string;
   public sistemaOperativo: string;
   public mac: string;
-  public nombreDeMaquina: string;
+  public nombreEquipo: string;
   public procesador: string;
   public ram: string;
   public ssdHdd: string;
@@ -38,30 +38,30 @@ export class CreateMassiveDto {
 
   static fromExcelRow(row: any): CreateMassiveDto {
     return new CreateMassiveDto({
-      empresa: row['Empresa'],
-      rutUsuario: row['Rut Usuario'],
-      agenciaNombre: row['Agencia Nombre'],
+      empresa: row['EMPRESA'] === 'N/A' || row['EMPRESA'] === '' ? undefined : row['EMPRESA'],
+      rutUsuario: row['RUT USUARIO'] === 'N/A' || row['RUT USUARIO'] === '' ? undefined : row['RUT USUARIO'],
+      agencia: row['AGENCIA'] === 'N/A' || row['AGENCIA'] === '' ? undefined : row['AGENCIA'],
       // nemonico: row['Nemonico'],
       // dpc: row['DPC'],
-      caja: row['caja'],
-      ubicacion: row['Ubicacion'],
-      equipo: row['Equipo'],
-      marca: row['Marca'],
-      modelo: row['Modelo'],
-      sistemaOperativo: row['Sistema Operativo'],
-      mac: row['MAC'],
-      nombreDeMaquina: row['Nombre de Maquina'],
-      procesador: row['Procesador'],
-      ram: row['RAM'],
-      ssdHdd: row['SSD/HDD'],
-      ip: row['IP'],
-      ddllTbk: row['DDLL TBK'],
-      numeroSerie: row['Numero serie'],
-      numeroInventario: row['Numero CI'],
-      estado: row['Estado'],
-      encargadoAgencia: row['Encargado Agencia'],
-      ordenCompra: row['Orden de compra numero'],
-      fecha: row['Fechas'],
+      caja: row['USO'] === 'N/A' || row['USO'] === '' ? undefined : row['USO'],
+      ubicacion: row['UBICACION'] === 'N/A' || row['UBICACION'] === '' ? undefined : row['UBICACION'],
+      equipo: row['EQUIPO'] === 'N/A' || row['EQUIPO'] === '' ? undefined : row['EQUIPO'],
+      marca: row['MARCA'] === 'N/A' || row['MARCA'] === '' ? undefined : row['MARCA'],
+      modelo: row['MODELO'] === 'N/A' || row['MODELO'] === '' ? undefined : row['MODELO'],
+      sistemaOperativo: row['SISTEMA OPERATIVO'] === 'N/A' || row['SISTEMA OPERATIVO'] === '' ? undefined : row['SISTEMA OPERATIVO'],
+      mac: row['MAC'] === 'N/A' || row['MAC'] === '' ? undefined : row['MAC'],
+      nombreEquipo: row['NOMBRE EQUIPO'] === 'N/A' || row['NOMBRE EQUIPO'] === '' ? undefined : row['NOMBRE EQUIPO'],
+      procesador: row['PROCESADOR'] === 'N/A' || row['PROCESADOR'] === '' ? undefined : row['PROCESADOR'],
+      ram: row['RAM'] === 'N/A' || row['RAM'] === '' ? undefined : row['RAM'],
+      ssdHdd: row['SSD/HDD'] === 'N/A' || row['SSD/HDD'] === '' ? undefined : row['SSD/HDD'],
+      ip: row['IP'] === 'N/A' || row['IP'] === '' ? undefined : row['IP'],
+      ddllTbk: row['DDLL TBK'] === 'N/A' || row['DDLL TBK'] === '' ? undefined : row['DDLL TBK'],
+      numeroSerie: row['NUMERO SERIE'] === 'N/A' || row['NUMERO SERIE'] === '' ? undefined : row['NUMERO SERIE'],
+      numeroInventario: row['NUMERO INVENTARIO'] === 'N/A' || row['NUMERO INVENTARIO'] === '' ? undefined : row['NUMERO INVENTARIO'],
+      estado: row['ESTADO'] === 'N/A' || row['ESTADO'] === '' ? undefined : row['ESTADO'],
+      encargadoAgencia: row['ENCARGADO AGENCIA'] === 'N/A' || row['ENCARGADO AGENCIA'] === '' ? undefined : row['ENCARGADO AGENCIA'],
+      ordenCompra: row['ORDEN COMPRA'] === 'N/A' || row['ORDEN COMPRA'] === '' ? undefined : row['ORDEN COMPRA'],
+      fecha: row['FECHA INGRESO'] === 'N/A' || row['FECHA INGRESO'] === '' ? undefined : row['FECHA INGRESO'],
     });
   }
 
@@ -80,7 +80,7 @@ export class CreateMassiveDto {
       sistemaOperativo: value.sistemaOperativo,
       mac: value.mac,
       ip: value.ip,
-      nombre: value.nombreDeMaquina,
+      nombre: value.nombreEquipo,
       procesador: value.procesador,
       ramGb: parseInt(value.ram),
       disco: value.ssdHdd,

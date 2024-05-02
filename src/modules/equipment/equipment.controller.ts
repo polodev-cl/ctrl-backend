@@ -99,6 +99,8 @@ export class EquipmentController {
     const data = xlsx.utils.sheet_to_json(sheet);
     const massiveDto = data.map(CreateMassiveDto.fromExcelRow);
 
+    console.log('massiveDto', massiveDto);
+
     await this._uploadService.createOrUpdateProcess({uuid: uuid, state: UploadStateEnum.VALIDATING});
     await this._equipmentService.validateMassiveUpload(massiveDto, errorList);
 
