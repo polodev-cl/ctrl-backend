@@ -26,7 +26,7 @@ export class AgencyService {
   }
 
   public async listBy(params: any) {
-    return await this._agencyRepository.findBy(params);
+    return await this._agencyRepository.find({where: params, relations: [ 'empresa' ]});
   }
 
   public async findById(id: number) {

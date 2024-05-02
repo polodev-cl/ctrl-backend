@@ -17,11 +17,11 @@ export class UploadService {
     return await this.uploadProcessRepository.save(uploadProcess);
   }
 
-  async setProcessError(uuid: string, errors: string[]) {
+  async setProcessError(uuid: string, errors: Set<string>) {
     const uploadProcess = await this.uploadProcessRepository.findOne({where: {uuid: uuid}});
     if (uploadProcess.errors === null) uploadProcess.errors = [];
 
-    uploadProcess.errors.push(...errors);
+    uploadProcess.errors.push(...Array.from(errors));
 
     return await this.uploadProcessRepository.save(uploadProcess);
   }

@@ -97,17 +97,17 @@ export class EquipmentService {
     return await this._equipmentHistoryEntityRepository.find({where: {equipoId: id}, relations: [ 'usuario' ]});
   }
 
-  public async validateMassiveUpload(data: CreateMassiveDto[], errors: string[] = []) {
+  public async validateMassiveUpload(data: CreateMassiveDto[], errors: Set<string> = new Set<string>()) {
     data.forEach((record, index) => {
       const requiredFields = [ 'empresa', 'agenciaNombre' ] as (keyof CreateMassiveDto)[];
       for (const field of requiredFields) {
         if (!record[field]) {
-          errors.push(`Registro ${ index + 1 }: ${ field } es requerido`);
+          errors.add(`Registro ${ index + 1 }: ${ field } es requerido`);
         }
       }
     });
 
-    if (errors.length > 0) return;
+    if (errors.size > 0) return errors;
 
     const companies = new Set();
     const agencies = new Set();
@@ -119,8 +119,10 @@ export class EquipmentService {
       agencies.add(`${ record.empresa.trim() };${ record.agenciaNombre.trim() }`);
     }
 
-    const companiesList = await this._companyService.listBy({name: Array.from(companies)});
-    const agenciesList = await this._agencyService.listBy({name: Array.from(agencies).map((item: string) => item.split(';')[1])});
+    const companiesList = await this._companyService.listBy({nombreCorto: Array.from(companies)});
+    const agenciesList = await this._agencyService.listBy({
+      nombre: Array.from(agencies).map((item: string) => item.split(';')[1])
+    });
 
     for (let i = 0; i < data.length; i++) {
       const record = data[i];
@@ -131,20 +133,19 @@ export class EquipmentService {
           item.empresa.nombreCorto === record.empresa.trim()
         );
 
-      if (!company) errors.push(`Registro ${ i }: Empresa ${ record.empresa } no encontrada`);
-      if (!agency) errors.push(`Registro ${ i }: Agencia ${ record.agenciaNombre } no encontrada`);
+      if (!company) errors.add(`Empresa ${ record.empresa } no encontrada`);
+      if (!agency) errors.add(`Agencia ${ record.agenciaNombre } no encontrada`);
 
       data[i].company = company;
       data[i].agency = agency;
     }
 
-    if (companiesList.length !== companies.size) errors.push('Una o más empresas no están registradas');
-    if (agenciesList.length !== agencies.size) errors.push('Una o más agencias no están registradas');
+    console.log(errors);
 
     return errors;
   }
 
-  public async massiveFindExcelDuplicates(data: IEquipment[], errors: string[]) {
+  public async massiveFindExcelDuplicates(data: IEquipment[], errors: Set<string> = new Set<string>()) {
     const inventories = new Set();
     const macs = new Set();
     const series = new Set();
@@ -152,9 +153,9 @@ export class EquipmentService {
     for (let i = 0; i < data.length; i++) {
       const record = data[i];
 
-      if (inventories.has(record.inventario)) errors.push(`Registro ${ i + 1 }: Inventario ${ record.inventario } ya se encuentra en el excel`);
-      if (macs.has(record.mac)) errors.push(`Registro ${ i + 1 }: Mac ${ record.mac } ya se encuentra en el excel`);
-      if (series.has(record.serie)) errors.push(`Registro ${ i + 1 }: Serie ${ record.serie } ya se encuentra en el excel`);
+      if (inventories.has(record.inventario)) errors.add(`Registro ${ i + 1 }: Inventario ${ record.inventario } ya se encuentra en el excel`);
+      if (macs.has(record.mac)) errors.add(`Registro ${ i + 1 }: Mac ${ record.mac } ya se encuentra en el excel`);
+      if (series.has(record.serie)) errors.add(`Registro ${ i + 1 }: Serie ${ record.serie } ya se encuentra en el excel`);
 
       inventories.add(record.inventario);
       macs.add(record.mac);
@@ -164,7 +165,7 @@ export class EquipmentService {
     return errors;
   }
 
-  public async massiveFindDBDuplicates(data: IEquipment[], errors: string[]): Promise<number[]> {
+  public async massiveFindDBDuplicates(data: IEquipment[], errors: Set<string> = new Set<string>()): Promise<number[]> {
     const duplicateIndices: number[] = [];
     const inventoryMap = new Map<string, number>();
     const macMap = new Map<string, number>();
@@ -187,15 +188,15 @@ export class EquipmentService {
     data.forEach((item, index) => {
       let foundDuplicate = false;
       if (item.inventario && inventoryMap.has(item.inventario.toString())) {
-        errors.push(`Inventario ${ item.inventario } ya existe en la base de datos en el índice ${ index }`);
+        errors.add(`Inventario ${ item.inventario } ya existe en la base de datos en el índice ${ index }`);
         foundDuplicate = true;
       }
       if (item.mac && macMap.has(item.mac)) {
-        errors.push(`Mac ${ item.mac } ya existe en la base de datos en el índice ${ index }`);
+        errors.add(`Mac ${ item.mac } ya existe en la base de datos en el índice ${ index }`);
         foundDuplicate = true;
       }
       if (item.serie && serieMap.has(item.serie)) {
-        errors.push(`Serie ${ item.serie } ya existe en la base de datos en el índice ${ index }`);
+        errors.add(`Serie ${ item.serie } ya existe en la base de datos en el índice ${ index }`);
         foundDuplicate = true;
       }
       if (foundDuplicate) duplicateIndices.push(index);
@@ -205,7 +206,7 @@ export class EquipmentService {
   }
 
 
-  public async massiveUpload(data: IEquipment[], errorList: string[] = []) {
+  public async massiveUpload(data: IEquipment[], errorList: Set<string> = new Set<string>()) {
     const entities = data.map((item) => this._equipmentRepository.create(item));
 
     await this._equipmentRepository.save(entities);

@@ -12,14 +12,12 @@ import {
   Query,
   UploadedFile,
   UseInterceptors
-}                           from '@nestjs/common';
-import { FilesInterceptor } from '@nestjs/platform-express';
+}                          from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
-import { Express } from 'express';
-import { v4 }      from 'uuid';
-import * as xlsx   from 'xlsx';
+import { v4 }    from 'uuid';
+import * as xlsx from 'xlsx';
 
-import { StorageService }                 from '@modules/aws/services/storage.service';
 import { CreateMassiveDto }               from '@modules/equipment/dto/create-massive.dto';
 import { ResponseEquipmentHistoryMapper } from '@modules/equipment/mappers/response-equipment-history.mapper';
 import { ResponseEquipmentMiniMapper }    from '@modules/equipment/mappers/response-equipment-mini.mapper';
@@ -27,19 +25,16 @@ import { UploadStateEnum }                from '@modules/massive-upload/enum/upl
 import { UploadTypeEnum }                 from '@modules/massive-upload/enum/upload-type.enum';
 import { UploadService }                  from '@modules/massive-upload/services/upload.service';
 
-
+import { EXCEL_MIME_TYPE }    from '../../common/constants';
 import { CreateEquipmentDto } from './dto/create-equipment.dto';
 import { EquipmentQueryDto }  from './dto/equipment-query.dto';
 import { UpdateEquipmentDto } from './dto/update-equipment.dto';
 import { EquipmentService }   from './equipment.service';
-import { EXCEL_MIME_TYPE }    from '../../common/constants';
-
 
 @Controller('equipment')
 export class EquipmentController {
   constructor(private readonly _equipmentService: EquipmentService,
-              private readonly _uploadService: UploadService,
-              private readonly _storageService: StorageService) {}
+              private readonly _uploadService: UploadService) {}
 
   @Get()
   public async list(@Query() query: EquipmentQueryDto) {
@@ -70,7 +65,7 @@ export class EquipmentController {
   }
 
   @Post('/upload')
-  @UseInterceptors(FilesInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file'))
   public async massiveUpload(
     @UploadedFile('file',
       new ParseFilePipe({
@@ -80,7 +75,7 @@ export class EquipmentController {
       }),
     ) file: Express.Multer.File) {
     const uuid = v4();
-    const errorList: string[] = [];
+    const errorList: Set<string> = new Set<string>();
 
     const s3Params = {
       Bucket: 'bucket',
@@ -90,7 +85,7 @@ export class EquipmentController {
       ACL: 'public-read'
     };
 
-    await this._storageService.upload(s3Params);
+    // await this._storageService.upload(s3Params);
     await this._uploadService.createOrUpdateProcess({
       uuid: uuid,
       filename: file.originalname,
@@ -107,9 +102,9 @@ export class EquipmentController {
     await this._uploadService.createOrUpdateProcess({uuid: uuid, state: UploadStateEnum.VALIDATING});
     await this._equipmentService.validateMassiveUpload(massiveDto, errorList);
 
-    if (errorList.length > 0) {
+    if (errorList.size > 0) {
       await this._uploadService.setProcessError(uuid, errorList);
-      return {uuid, errors: errorList};
+      return {uuid, errors: Array.from(errorList), step: UploadStateEnum.VALIDATING};
     }
 
     // This object contain parsed data, ready for the database
@@ -119,17 +114,17 @@ export class EquipmentController {
     await this._uploadService.createOrUpdateProcess({uuid: uuid, state: UploadStateEnum.LOOKING_FOR_EXCEL_DUPLICATES});
     await this._equipmentService.massiveFindExcelDuplicates(massiveParsedDto, errorList);
 
-    if (errorList.length > 0) {
+    if (errorList.size > 0) {
       await this._uploadService.setProcessError(uuid, errorList);
-      return {uuid, errors: errorList};
+      return {uuid, errors: Array.from(errorList), step: UploadStateEnum.LOOKING_FOR_EXCEL_DUPLICATES};
     }
 
     await this._uploadService.createOrUpdateProcess({uuid: uuid, state: UploadStateEnum.LOOKING_FOR_DUPLICATES});
     await this._equipmentService.massiveFindDBDuplicates(massiveParsedDto, errorList);
 
-    if (errorList.length > 0) {
+    if (errorList.size > 0) {
       await this._uploadService.setProcessError(uuid, errorList);
-      return {uuid, errors: errorList};
+      return {uuid, errors: Array.from(errorList), step: UploadStateEnum.LOOKING_FOR_DUPLICATES};
     }
 
     //

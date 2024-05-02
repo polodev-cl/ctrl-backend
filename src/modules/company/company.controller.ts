@@ -19,7 +19,7 @@ export class CompanyController {
     return (await this._companyService.list(query)).map(ResponseCompanySelectorMapper.map);
   }
 
-  @Get(':id')
+  @Get('/:id')
   public async findById(@Param('id', ParseFloatPipe) id: number) {
     return await this._companyService.findById(id);
   }
