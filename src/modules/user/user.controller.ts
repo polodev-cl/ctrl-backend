@@ -5,6 +5,7 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 
 
+
 @Controller("user")
 export class UserController {
   constructor(private readonly _userService: UserService) {}
@@ -26,5 +27,10 @@ export class UserController {
   @Delete(":id")
   public async delete(@Param("id") id: number) {
     return await this._userService.delete(id);
+  }
+
+  @Get(":cognitoId")
+  public async getUserByCognitoId(@Param("cognitoId") cognitoId: string) {
+    return await this._userService.getUserByCognitoId(cognitoId);
   }
 }

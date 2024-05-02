@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { UserEntity } from "./entities/user.entity";
 import { Equal, FindOptionsWhere, ILike, Repository } from "typeorm";
 import { UserQueryDto } from "./dto/user-query.dto";
@@ -11,7 +11,8 @@ import { AxiosService } from "./axios.service";
 export class UserService {
   constructor(
     @InjectRepository(UserEntity) private readonly _userRepository: Repository<UserEntity>,
-    private readonly axiosService: AxiosService
+    private readonly axiosService: AxiosService,
+
   ) {}
 
   public async list(queryParams?: UserQueryDto) {
@@ -25,7 +26,10 @@ export class UserService {
 
     console.log(whereFilter);
 
-    return await this._userRepository.find({ where: whereFilter });
+    return await this._userRepository.find({
+      where: whereFilter,
+      relations: ["empresa"]  
+  });
   }
 
   public async create(createUserDto: CreateUserDto) {
@@ -62,4 +66,19 @@ export class UserService {
   public async delete(id: number) {
     return await this._userRepository.softDelete(id);
   }
+
+  public async getUserByCognitoId(cognitoId: string) {
+    const user = await this._userRepository.findOne({
+        where: { cognito_id: cognitoId },
+        relations: ["empresa"] // Carga la relación con la empresa
+    });
+
+    if (!user) {
+        throw new NotFoundException(`Usuario con ID ${cognitoId} no encontrado.`);
+    }
+
+    return user;  // Aquí retornamos el usuario con su empresa cargada
+}
+
+
 }
