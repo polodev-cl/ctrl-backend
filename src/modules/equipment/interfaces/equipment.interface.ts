@@ -3,10 +3,10 @@ import { EquipmentUseEnum }      from '@modules/equipment/enums/equipment-use.en
 import { EquipmentDiskTypeEnum } from '@modules/equipment/enums/equipment-disk-type.enum';
 
 export interface IEquipment {
-  id: number;
-  fechaCreacion: Date;
-  fechaModificacion: Date;
-  estado: EquipmentStatusEnum;
+  id?: number;
+  fechaCreacion?: Date;
+  fechaModificacion?: Date;
+  estado?: EquipmentStatusEnum;
   fechaIngreso: Date;
   ordenCompra: string;
   rut?: string;
@@ -17,7 +17,7 @@ export interface IEquipment {
   tipo: string;
   sistemaOperativo?: string;
   sistemaOperativoVersion?: string;
-  uso: EquipmentUseEnum;
+  uso?: EquipmentUseEnum;
   marca: string;
   modelo: string;
   mac?: string;
@@ -31,6 +31,6 @@ export interface IEquipment {
   encargadoAgencia: string;
   ubicacion: string;
   garantiaMeses: number;
-  usuarioIdCreacion: number;
-  usuarioIdModificacion: number;
+  usuarioIdCreacion?: number;
+  usuarioIdModificacion?: number;
 }

@@ -11,6 +11,7 @@ import { UserModule }          from '@modules/user/user.module';
 
 import { AppController } from './app.controller';
 import { AppService }    from './app.service';
+import { AwsModule }     from '@modules/aws/aws.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { AppService }    from './app.service';
         };
       },
     }),
+    AwsModule,
     CompanyModule,
     RolModule,
     UserModule,
