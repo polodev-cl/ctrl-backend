@@ -28,6 +28,10 @@ export class CompanyService {
     return await this._companyRepository.find({ where: whereFilter });
   }
 
+  public async listBy(params: any) {
+    return await this._companyRepository.findBy(params);
+  }
+
   public async findById(id: number) {
     const company = await this._companyRepository.findOne({where: {id}});
 
