@@ -127,17 +127,16 @@ export class EquipmentController {
       return {uuid, errors: Array.from(errorList), step: UploadStateEnum.LOOKING_FOR_DUPLICATES};
     }
 
-    //
-    // await this._uploadService.createOrUpdateProcess({uuid: uuid, state: UploadStateEnum.UPLOADING});
-    // const { completed } = await this._equipmentService.massiveUpload(massiveParsedDto, errorList);
-    //
-    // if (errorList.length > 0) {
-    //   await this._uploadService.setProcessError(uuid, errorList);
-    //   return {uuid, errors: errorList};
-    // } else {
-    //   await this._uploadService.createOrUpdateProcess({uuid: uuid, state: UploadStateEnum.FINISHED});
-    //   return {uuid, completed};
-    // }
+    await this._uploadService.createOrUpdateProcess({uuid: uuid, state: UploadStateEnum.UPLOADING});
+    const {completed} = await this._equipmentService.massiveUpload(massiveParsedDto, errorList);
+
+    if (errorList.size > 0) {
+      await this._uploadService.setProcessError(uuid, errorList);
+      return {uuid, errors: errorList, step: UploadStateEnum.UPLOADING};
+    } else {
+      await this._uploadService.createOrUpdateProcess({uuid: uuid, state: UploadStateEnum.FINISHED});
+      return {uuid, completed, errors: errorList, step: UploadStateEnum.FINISHED};
+    }
   }
 
   @Patch('/:id')
