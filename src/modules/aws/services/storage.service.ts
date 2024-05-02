@@ -1,17 +1,15 @@
-import { Injectable }       from '@nestjs/common';
-import { S3 }               from 'aws-sdk';
-import { PutObjectRequest } from 'aws-sdk/clients/s3';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class StorageService {
-  private readonly s3 = new S3();
+  // private readonly s3 = new S3();
 
   constructor() {}
 
-  upload(s3Params: PutObjectRequest) {
-    // Upload file to S3
-    return this.s3.upload({
-      ...s3Params
-    }).promise();
-  }
+  // upload(s3Params: PutObjectRequest) {
+  //   // Upload file to S3
+  //   return this.s3.upload({
+  //     ...s3Params
+  //   }).promise();
+  // }
 }
