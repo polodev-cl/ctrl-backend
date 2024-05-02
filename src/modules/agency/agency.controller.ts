@@ -18,14 +18,14 @@ export class AgencyController {
       .then((agencies) => agencies.map(ResponseAgencyMapper.map));
   }
 
+  @Get('selector')
+  public async listSelector(@Query() query: AgencyQueryDto) {
+    return (await this._agencyService.list(query)).map(ResponseAgencySelectorMapper.map);
+  }
+
   @Get(':id')
   public async findOne(@Param('id', ParseFloatPipe) id: number) {
     return await this._agencyService.findById(id).then(ResponseAgencyMapper.map);
-  }
-
-  @Get('/selector')
-  public async listSelector(@Query() query: AgencyQueryDto) {
-    return (await this._agencyService.list(query)).map(ResponseAgencySelectorMapper.map);
   }
 
   @Post()
