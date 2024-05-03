@@ -9,6 +9,7 @@ import { CompanyQueryDto }  from '@modules/company/dto/company-query.dto';
 import { CreateCompanyDto } from '@modules/company/dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { EquipmentService } from '@modules/equipment/equipment.service';
+import { UserCompanyType }  from '../../common/decorators/company-id.decorator';
 
 @Injectable()
 export class CompanyService {
@@ -17,7 +18,7 @@ export class CompanyService {
     @Inject(forwardRef(() => EquipmentService)) private readonly equipmentService: EquipmentService
   ) {}
 
-  public async list(queryParams?: CompanyQueryDto) {
+  public async list(queryParams?: CompanyQueryDto, userCompany?: UserCompanyType) {
     const whereFilter: FindOptionsWhere<CompanyEntity> = Object.keys(queryParams).reduce((acc, key) => {
       if (queryParams[key]) acc[key] = ILike(`%${queryParams[key]}%`);
       return acc;
@@ -27,7 +28,9 @@ export class CompanyService {
     if (queryParams.activo !== undefined) whereFilter["activo"] = Equal(queryParams.activo);
     if (queryParams.id) whereFilter["id"] = Equal(queryParams.id);
 
-    console.log(whereFilter);
+    if (!userCompany?.prestador) whereFilter['id'] = Equal(userCompany.empId);
+
+    console.log(userCompany);
 
     return await this._companyRepository.find({ where: whereFilter });
   }

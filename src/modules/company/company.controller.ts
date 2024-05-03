@@ -4,6 +4,7 @@ import { CompanyService }                                                       
 import { CreateCompanyDto }                                                         from '@modules/company/dto/create-company.dto';
 import { UpdateCompanyDto }                                                         from './dto/update-company.dto';
 import { ResponseCompanySelectorMapper }                                            from '@modules/company/mappers/response-company-selector.mapper';
+import { UserCompany, UserCompanyType }                                             from '../../common/decorators/company-id.decorator';
 
 @Controller("company")
 export class CompanyController {
@@ -15,8 +16,11 @@ export class CompanyController {
   }
 
   @Get('/selector')
-  public async listSelector(@Query() query: CompanyQueryDto) {
-    return (await this._companyService.list(query)).map(ResponseCompanySelectorMapper.map);
+  public async listSelector(
+    @UserCompany() userCompany: UserCompanyType,
+    @Query() query: CompanyQueryDto
+  ) {
+    return (await this._companyService.list(query, userCompany)).map(ResponseCompanySelectorMapper.map);
   }
 
   @Get('/:id')

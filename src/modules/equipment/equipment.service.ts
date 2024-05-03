@@ -13,6 +13,7 @@ import { EquipmentEntity }    from './entities/equipment.entity';
 import { EquipmentQueryDto }  from './dto/equipment-query.dto';
 import { CreateEquipmentDto } from './dto/create-equipment.dto';
 import { UpdateEquipmentDto } from './dto/update-equipment.dto';
+import { UserCompanyType }    from '../../common/decorators/company-id.decorator';
 
 @Injectable()
 export class EquipmentService {
@@ -23,7 +24,7 @@ export class EquipmentService {
     private readonly _agencyService: AgencyService
   ) {}
 
-  public async list(queryParams?: EquipmentQueryDto) {
+  public async list(queryParams?: EquipmentQueryDto, userCompany?: UserCompanyType) {
     const whereFilter: FindOptionsWhere<EquipmentEntity> = {};
 
     Object.keys(queryParams).forEach((key) => {
@@ -40,10 +41,8 @@ export class EquipmentService {
     });
 
     if (queryParams.uso) whereFilter.uso = Equal(queryParams.uso);
-    if (queryParams.empId) {
-      delete whereFilter['empId'];
-      whereFilter['agencia'] = {empId: Equal(queryParams.empId)};
-    }
+
+    if (!userCompany?.prestador) whereFilter['agencia'] = {empId: Equal(userCompany.empId)};
 
     return await this._equipmentRepository.find({where: whereFilter, relations: [ 'agencia', 'agencia.empresa', 'usuarioCreacion' ]});
   }

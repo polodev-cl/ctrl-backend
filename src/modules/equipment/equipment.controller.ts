@@ -27,11 +27,12 @@ import { UploadStateEnum }                from '@modules/massive-upload/enum/upl
 import { UploadTypeEnum }                 from '@modules/massive-upload/enum/upload-type.enum';
 import { UploadService }                  from '@modules/massive-upload/services/upload.service';
 
-import { EXCEL_MIME_TYPE }    from '../../common/constants';
-import { CreateEquipmentDto } from './dto/create-equipment.dto';
-import { EquipmentQueryDto }  from './dto/equipment-query.dto';
-import { UpdateEquipmentDto } from './dto/update-equipment.dto';
-import { EquipmentService }   from './equipment.service';
+import { EXCEL_MIME_TYPE }              from '../../common/constants';
+import { CreateEquipmentDto }           from './dto/create-equipment.dto';
+import { EquipmentQueryDto }            from './dto/equipment-query.dto';
+import { UpdateEquipmentDto }           from './dto/update-equipment.dto';
+import { EquipmentService }             from './equipment.service';
+import { UserCompany, UserCompanyType } from '../../common/decorators/company-id.decorator';
 
 @Controller('equipment')
 export class EquipmentController {
@@ -39,8 +40,11 @@ export class EquipmentController {
               private readonly _uploadService: UploadService) {}
 
   @Get()
-  public async list(@Query() query: EquipmentQueryDto) {
-    return await this._equipmentService.list(query);
+  public async list(
+    @UserCompany() userCompany: UserCompanyType,
+    @Query() query: EquipmentQueryDto
+  ) {
+    return await this._equipmentService.list(query, userCompany);
   }
 
   @Get('/mini')
