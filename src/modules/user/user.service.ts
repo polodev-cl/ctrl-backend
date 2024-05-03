@@ -1,11 +1,11 @@
-import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
-import { UserEntity } from "./entities/user.entity";
-import { Equal, FindOptionsWhere, ILike, Repository } from "typeorm";
-import { UserQueryDto } from "./dto/user-query.dto";
-import { InjectRepository } from "@nestjs/typeorm";
-import { UpdateUserDto } from "./dto/update-user.dto";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { AxiosService } from "./axios.service";
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { UserEntity }                                       from './entities/user.entity';
+import { Equal, FindOptionsWhere, ILike, Repository }       from 'typeorm';
+import { UserQueryDto }                                     from './dto/user-query.dto';
+import { InjectRepository }                                 from '@nestjs/typeorm';
+import { UpdateUserDto }                                    from './dto/update-user.dto';
+import { CreateUserDto }                                    from './dto/create-user.dto';
+import { AxiosService }                                     from './axios.service';
 
 @Injectable()
 export class UserService {
@@ -77,7 +77,7 @@ export class UserService {
         throw new NotFoundException(`Usuario con ID ${cognitoId} no encontrado.`);
     }
 
-    return user;  // Aquí retornamos el usuario con su empresa cargada
+    return user;
 }
 
 

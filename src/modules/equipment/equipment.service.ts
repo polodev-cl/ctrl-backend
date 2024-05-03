@@ -6,13 +6,13 @@ import { Equal, FindOptionsWhere, ILike, In, Repository } from 'typeorm';
 import { AgencyService }          from '@modules/agency/agency.service';
 import { CompanyService }         from '@modules/company/company.service';
 import { EquipmentHistoryEntity } from '@modules/equipment/entities/equipment-history.entity';
+import { CreateMassiveDto }       from '@modules/equipment/dto/create-massive.dto';
+import { IEquipment }             from '@modules/equipment/interfaces/equipment.interface';
 
 import { EquipmentEntity }    from './entities/equipment.entity';
 import { EquipmentQueryDto }  from './dto/equipment-query.dto';
 import { CreateEquipmentDto } from './dto/create-equipment.dto';
 import { UpdateEquipmentDto } from './dto/update-equipment.dto';
-import { IEquipment }         from '@modules/equipment/interfaces/equipment.interface';
-import { CreateMassiveDto }   from '@modules/equipment/dto/create-massive.dto';
 
 @Injectable()
 export class EquipmentService {

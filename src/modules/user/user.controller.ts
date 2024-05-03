@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from "@nestjs/common";
-import { UserService } from "./user.service";
-import { UserQueryDto } from "./dto/user-query.dto";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
-
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { UserService }                                              from './user.service';
+import { UserQueryDto }                                             from './dto/user-query.dto';
+import { CreateUserDto }                                            from './dto/create-user.dto';
+import { UpdateUserDto }                                            from './dto/update-user.dto';
+import { ResponseUserMapper }                                       from '@modules/user/mappers/response-user.mapper';
 
 
 @Controller("user")
@@ -31,6 +31,6 @@ export class UserController {
 
   @Get(":cognitoId")
   public async getUserByCognitoId(@Param("cognitoId") cognitoId: string) {
-    return await this._userService.getUserByCognitoId(cognitoId);
+    return await this._userService.getUserByCognitoId(cognitoId).then(ResponseUserMapper.map);
   }
 }
