@@ -42,7 +42,7 @@ export class EquipmentService {
 
     if (queryParams.uso) whereFilter.uso = Equal(queryParams.uso);
 
-    if (!userCompany?.prestador) whereFilter['agencia'] = {empId: Equal(userCompany.empId)};
+    if (userCompany && !userCompany?.prestador) whereFilter['agencia'] = {empId: Equal(userCompany.empId)};
 
     return await this._equipmentRepository.find({where: whereFilter, relations: [ 'agencia', 'agencia.empresa', 'usuarioCreacion' ]});
   }

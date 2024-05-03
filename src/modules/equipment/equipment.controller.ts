@@ -48,8 +48,11 @@ export class EquipmentController {
   }
 
   @Get('/mini')
-  public async light(@Query() query: EquipmentQueryDto) {
-    return await this._equipmentService.list(query)
+  public async light(
+    @UserCompany() userCompany: UserCompanyType,
+    @Query() query: EquipmentQueryDto
+  ) {
+    return await this._equipmentService.list(query, userCompany)
       .then((data) => data.map(ResponseEquipmentMiniMapper.map));
   }
 
