@@ -31,10 +31,6 @@ export class EquipmentService {
         const value = queryParams[key];
         if (key === 'rut') {
           whereFilter[key] = ILike(`%${ value }%`);
-        } else if (key === 'uso') {
-          whereFilter[key] = value;
-        } else if (key === 'sistemaOperativoVersion') {
-          whereFilter[key] = ILike(`%${ value }%`);
         } else if (!isNaN(parseFloat(value))) {
           whereFilter[key] = Equal(parseFloat(value));
         } else {
@@ -43,7 +39,11 @@ export class EquipmentService {
       }
     });
 
-    console.log(whereFilter);
+    if (queryParams.uso) whereFilter.uso = Equal(queryParams.uso);
+    if (queryParams.empId) {
+      delete whereFilter['empId'];
+      whereFilter['agencia'] = {empId: Equal(queryParams.empId)};
+    }
 
     return await this._equipmentRepository.find({where: whereFilter, relations: [ 'agencia', 'agencia.empresa', 'usuarioCreacion' ]});
   }

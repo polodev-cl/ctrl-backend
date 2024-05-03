@@ -130,4 +130,7 @@ export class EquipmentQueryDto implements Partial<EquipmentEntity> {
   @IsNumber()
   @IsOptional()
   idCreacionId?: number;
+
+  @IsOptional()
+  empId?: number;
 }

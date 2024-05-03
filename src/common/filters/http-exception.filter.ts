@@ -13,6 +13,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     let {message} = exception.getResponse() as any;
 
+    console.log('HTTP Exception Filter: ' + JSON.stringify(exception.getResponse()));
+
     if (Array.isArray(message)) message = message.join(', ');
 
     const errorResponse = {
@@ -20,7 +22,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: request.url,
       method: request.method,
-      message: message || exception.message || null,
+      message: message || exception.getResponse() || exception.message || null,
     };
 
     this.logger.error('HTTP Exception Filter: ' + JSON.stringify(exception.getResponse()));
