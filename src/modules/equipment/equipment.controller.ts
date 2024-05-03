@@ -85,7 +85,6 @@ export class EquipmentController {
       ACL: 'public-read'
     };
 
-    // await this._storageService.upload(s3Params);
     await this._uploadService.createOrUpdateProcess({
       uuid: uuid,
       filename: file.originalname,
@@ -99,45 +98,49 @@ export class EquipmentController {
     const data = xlsx.utils.sheet_to_json(sheet);
     const massiveDto = data.map(CreateMassiveDto.fromExcelRow);
 
-    console.log('massiveDto', massiveDto);
+    try {
+      await this._uploadService.createOrUpdateProcess({uuid: uuid, state: UploadStateEnum.VALIDATING});
+      await this._equipmentService.validateMassiveUpload(massiveDto, errorList);
 
-    await this._uploadService.createOrUpdateProcess({uuid: uuid, state: UploadStateEnum.VALIDATING});
-    await this._equipmentService.validateMassiveUpload(massiveDto, errorList);
+      if (errorList.size > 0) {
+        await this._uploadService.setProcessError(uuid, errorList);
+        return {uuid, errors: Array.from(errorList), step: UploadStateEnum.VALIDATING};
+      }
 
-    if (errorList.size > 0) {
+      // This object contain parsed data, ready for the database
+      const massiveParsedDto = massiveDto.map(CreateMassiveDto.toEntity);
+
+      // Find duplicates resources in the Excel file
+      await this._uploadService.createOrUpdateProcess({uuid: uuid, state: UploadStateEnum.LOOKING_FOR_EXCEL_DUPLICATES});
+      await this._equipmentService.massiveFindExcelDuplicates(massiveParsedDto, errorList);
+
+      if (errorList.size > 0) {
+        await this._uploadService.setProcessError(uuid, errorList);
+        return {uuid, errors: Array.from(errorList), step: UploadStateEnum.LOOKING_FOR_EXCEL_DUPLICATES};
+      }
+
+      await this._uploadService.createOrUpdateProcess({uuid: uuid, state: UploadStateEnum.LOOKING_FOR_DUPLICATES});
+      await this._equipmentService.massiveFindDBDuplicates(massiveParsedDto, errorList);
+
+      if (errorList.size > 0) {
+        await this._uploadService.setProcessError(uuid, errorList);
+        return {uuid, errors: Array.from(errorList), step: UploadStateEnum.LOOKING_FOR_DUPLICATES};
+      }
+
+      await this._uploadService.createOrUpdateProcess({uuid: uuid, state: UploadStateEnum.UPLOADING});
+      const {completed} = await this._equipmentService.massiveUpload(massiveParsedDto, errorList);
+
+      if (errorList.size > 0) {
+        await this._uploadService.setProcessError(uuid, errorList);
+        return {uuid, errors: errorList, step: UploadStateEnum.UPLOADING};
+      } else {
+        await this._uploadService.createOrUpdateProcess({uuid: uuid, state: UploadStateEnum.FINISHED});
+        return {uuid, completed, errors: errorList, step: UploadStateEnum.FINISHED};
+      }
+    } catch (err) {
+      errorList.add(err.message);
       await this._uploadService.setProcessError(uuid, errorList);
-      return {uuid, errors: Array.from(errorList), step: UploadStateEnum.VALIDATING};
-    }
-
-    // This object contain parsed data, ready for the database
-    const massiveParsedDto = massiveDto.map(CreateMassiveDto.toEntity);
-
-    // Find duplicates resources in the Excel file
-    await this._uploadService.createOrUpdateProcess({uuid: uuid, state: UploadStateEnum.LOOKING_FOR_EXCEL_DUPLICATES});
-    await this._equipmentService.massiveFindExcelDuplicates(massiveParsedDto, errorList);
-
-    if (errorList.size > 0) {
-      await this._uploadService.setProcessError(uuid, errorList);
-      return {uuid, errors: Array.from(errorList), step: UploadStateEnum.LOOKING_FOR_EXCEL_DUPLICATES};
-    }
-
-    await this._uploadService.createOrUpdateProcess({uuid: uuid, state: UploadStateEnum.LOOKING_FOR_DUPLICATES});
-    await this._equipmentService.massiveFindDBDuplicates(massiveParsedDto, errorList);
-
-    if (errorList.size > 0) {
-      await this._uploadService.setProcessError(uuid, errorList);
-      return {uuid, errors: Array.from(errorList), step: UploadStateEnum.LOOKING_FOR_DUPLICATES};
-    }
-
-    await this._uploadService.createOrUpdateProcess({uuid: uuid, state: UploadStateEnum.UPLOADING});
-    const {completed} = await this._equipmentService.massiveUpload(massiveParsedDto, errorList);
-
-    if (errorList.size > 0) {
-      await this._uploadService.setProcessError(uuid, errorList);
-      return {uuid, errors: errorList, step: UploadStateEnum.UPLOADING};
-    } else {
-      await this._uploadService.createOrUpdateProcess({uuid: uuid, state: UploadStateEnum.FINISHED});
-      return {uuid, completed, errors: errorList, step: UploadStateEnum.FINISHED};
+      return {uuid, errors: Array.from(errorList)};
     }
   }
 

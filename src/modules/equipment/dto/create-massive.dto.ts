@@ -1,6 +1,9 @@
-import { CompanyEntity } from '@modules/company/entities/company.entity';
-import { AgencyEntity }  from '@modules/agency/entities/agency.entity';
-import { IEquipment }    from '@modules/equipment/interfaces/equipment.interface';
+import { CompanyEntity }         from '@modules/company/entities/company.entity';
+import { AgencyEntity }          from '@modules/agency/entities/agency.entity';
+import { IEquipment }            from '@modules/equipment/interfaces/equipment.interface';
+import { EquipmentDiskTypeEnum } from '@modules/equipment/enums/equipment-disk-type.enum';
+import { EquipmentUseEnum }      from '@modules/equipment/enums/equipment-use.enum';
+import { EquipmentStatusEnum }   from '@modules/equipment/enums/equipment-status.enum';
 
 export class CreateMassiveDto {
   public empresa: string;
@@ -26,6 +29,7 @@ export class CreateMassiveDto {
   public estado: string;
   public encargadoAgencia: string;
   public ordenCompra: string;
+  public garantia: number;
   public fecha: Date;
 
   // Custom fields for creation
@@ -37,13 +41,15 @@ export class CreateMassiveDto {
   }
 
   static fromExcelRow(row: any): CreateMassiveDto {
+    // PARSE EXCEL DATE TO JS DATE
+    const date = row['FECHA INGRESO'] ? new Date(Math.round((row['FECHA INGRESO'] - 25569) * 86400 * 1000)) : undefined;
     return new CreateMassiveDto({
       empresa: row['EMPRESA'] === 'N/A' || row['EMPRESA'] === '' ? undefined : row['EMPRESA'],
       rutUsuario: row['RUT USUARIO'] === 'N/A' || row['RUT USUARIO'] === '' ? undefined : row['RUT USUARIO'],
       agencia: row['AGENCIA'] === 'N/A' || row['AGENCIA'] === '' ? undefined : row['AGENCIA'],
       // nemonico: row['Nemonico'],
       // dpc: row['DPC'],
-      caja: row['USO'] === 'N/A' || row['USO'] === '' ? undefined : row['USO'],
+      caja: row['USO'] === 'N/A' || row['USO'] === '' ? undefined : EquipmentUseEnum[row['USO']],
       ubicacion: row['UBICACION'] === 'N/A' || row['UBICACION'] === '' ? undefined : row['UBICACION'],
       equipo: row['EQUIPO'] === 'N/A' || row['EQUIPO'] === '' ? undefined : row['EQUIPO'],
       marca: row['MARCA'] === 'N/A' || row['MARCA'] === '' ? undefined : row['MARCA'],
@@ -53,15 +59,16 @@ export class CreateMassiveDto {
       nombreEquipo: row['NOMBRE EQUIPO'] === 'N/A' || row['NOMBRE EQUIPO'] === '' ? undefined : row['NOMBRE EQUIPO'],
       procesador: row['PROCESADOR'] === 'N/A' || row['PROCESADOR'] === '' ? undefined : row['PROCESADOR'],
       ram: row['RAM'] === 'N/A' || row['RAM'] === '' ? undefined : row['RAM'],
-      ssdHdd: row['SSD/HDD'] === 'N/A' || row['SSD/HDD'] === '' ? undefined : row['SSD/HDD'],
+      ssdHdd: row['SSD/HDD'] === 'N/A' || row['SSD/HDD'] === '' ? undefined : EquipmentDiskTypeEnum[row['SSD/HDD']],
       ip: row['IP'] === 'N/A' || row['IP'] === '' ? undefined : row['IP'],
       ddllTbk: row['DDLL TBK'] === 'N/A' || row['DDLL TBK'] === '' ? undefined : row['DDLL TBK'],
       numeroSerie: row['NUMERO SERIE'] === 'N/A' || row['NUMERO SERIE'] === '' ? undefined : row['NUMERO SERIE'],
       numeroInventario: row['NUMERO INVENTARIO'] === 'N/A' || row['NUMERO INVENTARIO'] === '' ? undefined : row['NUMERO INVENTARIO'],
-      estado: row['ESTADO'] === 'N/A' || row['ESTADO'] === '' ? undefined : row['ESTADO'],
+      estado: row['ESTADO'] === 'N/A' || row['ESTADO'] === '' ? undefined : EquipmentStatusEnum[row['ESTADO']],
       encargadoAgencia: row['ENCARGADO AGENCIA'] === 'N/A' || row['ENCARGADO AGENCIA'] === '' ? undefined : row['ENCARGADO AGENCIA'],
       ordenCompra: row['ORDEN COMPRA'] === 'N/A' || row['ORDEN COMPRA'] === '' ? undefined : row['ORDEN COMPRA'],
-      fecha: row['FECHA INGRESO'] === 'N/A' || row['FECHA INGRESO'] === '' ? undefined : row['FECHA INGRESO'],
+      garantia: row['GARANTIA MESES'] === 'N/A' || row['GARANTIA MESES'] === '' ? undefined : row['GARANTIA MESES'],
+      fecha: date
     });
   }
 
@@ -73,7 +80,7 @@ export class CreateMassiveDto {
       agenciaDpc: value.agency.dpc,
       agenciaMnemonic: value.agency.nemonico,
       ordenCompra: value.ordenCompra,
-      inventario: value.numeroInventario,
+      inventario: value.numeroInventario ? parseInt(value.numeroInventario.toString()) : undefined,
       tipo: value.equipo,
       marca: value.marca,
       modelo: value.modelo,
@@ -82,13 +89,13 @@ export class CreateMassiveDto {
       ip: value.ip,
       nombre: value.nombreEquipo,
       procesador: value.procesador,
-      ramGb: parseInt(value.ram),
+      ramGb: value.ram ? parseInt(value.ram) : undefined,
       disco: value.ssdHdd,
       ddllTbk: value.ddllTbk,
       serie: value.numeroSerie,
       encargadoAgencia: value.encargadoAgencia,
       ubicacion: value.ubicacion,
-      garantiaMeses: 0
+      garantiaMeses: value.garantia,
     } as IEquipment;
   }
 }

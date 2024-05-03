@@ -200,15 +200,15 @@ export class EquipmentService {
     data.forEach((item, index) => {
       let foundDuplicate = false;
       if (item.inventario && inventoryMap.has(item.inventario.toString())) {
-        errors.add(`Inventario ${ item.inventario } ya existe en la base de datos en el índice ${ index }`);
+        errors.add(`Inventario ${ item.inventario } ya existe en la base de datos en el índice ${ index + 1 }`);
         foundDuplicate = true;
       }
       if (item.mac && macMap.has(item.mac)) {
-        errors.add(`Mac ${ item.mac } ya existe en la base de datos en el índice ${ index }`);
+        errors.add(`Mac ${ item.mac } ya existe en la base de datos en el índice ${ index + 1 }`);
         foundDuplicate = true;
       }
       if (item.serie && serieMap.has(item.serie)) {
-        errors.add(`Serie ${ item.serie } ya existe en la base de datos en el índice ${ index }`);
+        errors.add(`Serie ${ item.serie } ya existe en la base de datos en el índice ${ index + 1 }`);
         foundDuplicate = true;
       }
       if (foundDuplicate) duplicateIndices.push(index);
