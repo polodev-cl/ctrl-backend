@@ -35,7 +35,6 @@ import { AwsModule }     from '@modules/aws/aws.module';
       imports: [ ConfigModule ],
       inject: [ ConfigService ],
       useFactory: (configService: ConfigService) => {
-        console.log(configService.get('database'));
         return {
           type: 'postgres',
           host: configService.get('database.host'),

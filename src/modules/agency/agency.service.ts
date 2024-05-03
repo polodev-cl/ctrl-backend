@@ -20,8 +20,6 @@ export class AgencyService {
     if (queryParams.id) whereFilter['id'] = Equal(queryParams.id);
     if (queryParams.empId) whereFilter['empId'] = Equal(queryParams.empId);
 
-    console.log(whereFilter);
-
     return await this._agencyRepository.find({where: whereFilter, relations: [ 'empresa' ]});
   }
 

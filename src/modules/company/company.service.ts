@@ -30,8 +30,6 @@ export class CompanyService {
 
     if (!userCompany?.prestador) whereFilter['id'] = Equal(userCompany.empId);
 
-    console.log(userCompany);
-
     return await this._companyRepository.find({ where: whereFilter });
   }
 

@@ -58,7 +58,6 @@ export class EquipmentController {
 
   @Get('/:id')
   public async getById(@Param('id', ParseFloatPipe) id: number) {
-    console.log('id', id);
     return await this._equipmentService.getById(id);
   }
 

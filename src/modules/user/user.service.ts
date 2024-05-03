@@ -24,8 +24,6 @@ export class UserService {
     if (queryParams.activo !== undefined) whereFilter["activo"] = Equal(queryParams.activo);
     if (queryParams.id) whereFilter["id"] = Equal(queryParams.id);
 
-    console.log(whereFilter);
-
     return await this._userRepository.find({
       where: whereFilter,
       relations: ["empresa"]  

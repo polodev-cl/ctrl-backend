@@ -25,7 +25,6 @@ export class EquipmentSubscriber implements EntitySubscriberInterface {
 
   @AfterUpdate()
   async afterUpdate(event: UpdateEvent<any>) {
-    console.log(event);
     const {entity, manager, databaseEntity, updatedColumns} = event;
 
     if (updatedColumns && updatedColumns.length > 0) {

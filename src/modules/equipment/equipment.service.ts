@@ -151,8 +151,6 @@ export class EquipmentService {
       data[i].agency = agency;
     }
 
-    console.log(errors);
-
     return errors;
   }
 
