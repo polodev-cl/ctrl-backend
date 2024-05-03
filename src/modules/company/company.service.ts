@@ -28,7 +28,7 @@ export class CompanyService {
     if (queryParams.activo !== undefined) whereFilter["activo"] = Equal(queryParams.activo);
     if (queryParams.id) whereFilter["id"] = Equal(queryParams.id);
 
-    if (!userCompany?.prestador) whereFilter['id'] = Equal(userCompany.empId);
+    if (userCompany && !userCompany?.prestador) whereFilter['id'] = Equal(userCompany.empId);
 
     return await this._companyRepository.find({ where: whereFilter });
   }
