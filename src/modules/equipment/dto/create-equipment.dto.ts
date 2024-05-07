@@ -21,6 +21,9 @@ export class CreateEquipmentDto implements Partial<EquipmentEntity> {
   @IsOptional()
   fechaIngreso?: Date;
 
+  @IsOptional()
+  fechaCompra?: Date;
+
   @IsNumber()
   @Type(() => Number)
   @IsOptional()

@@ -68,7 +68,7 @@ export class CreateMassiveDto {
       encargadoAgencia: row['ENCARGADO AGENCIA'] === 'N/A' || row['ENCARGADO AGENCIA'] === '' ? undefined : row['ENCARGADO AGENCIA'],
       ordenCompra: row['ORDEN COMPRA'] === 'N/A' || row['ORDEN COMPRA'] === '' ? undefined : row['ORDEN COMPRA'],
       garantia: row['GARANTIA MESES'] === 'N/A' || row['GARANTIA MESES'] === '' ? undefined : row['GARANTIA MESES'],
-      fecha: date
+      fecha: date,
     });
   }
 

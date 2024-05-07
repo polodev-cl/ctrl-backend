@@ -19,6 +19,11 @@ export class EquipmentQueryDto implements Partial<EquipmentEntity> {
   @IsOptional()
   fechaIngreso?: Date;
 
+  @IsDate()
+  @Transform(({value}) => new Date(value))
+  @IsOptional()
+  fechaCompra?: Date;
+
   @IsString()
   @Length(3, 50)
   @IsOptional()

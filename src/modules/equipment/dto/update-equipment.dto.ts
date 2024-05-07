@@ -13,6 +13,9 @@ export class UpdateEquipmentDto implements Partial<EquipmentEntity> {
   @IsOptional()
   fechaIngreso?: Date;
 
+  @IsOptional()
+  fechaCompra?: Date;
+
   @IsString()
   @Length(3, 50)
   @IsOptional()
