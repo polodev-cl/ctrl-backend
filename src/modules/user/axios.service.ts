@@ -11,6 +11,6 @@ export class AxiosService {
       id: createUserDto.id.toString(),
       nombres: createUserDto.nombres,
       email: createUserDto.email
-    });
+    }, {timeout: 15000, timeoutErrorMessage: 'Lambda cognito no disponible'});
   }
 }
