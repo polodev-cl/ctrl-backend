@@ -8,6 +8,7 @@ export interface IEquipment {
   fechaModificacion?: Date;
   estado?: EquipmentStatusEnum;
   fechaIngreso: Date;
+  fechaCompra?: Date;
   ordenCompra: string;
   rut?: string;
   agenciaId?: number;

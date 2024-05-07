@@ -30,7 +30,8 @@ export class CreateMassiveDto {
   public encargadoAgencia: string;
   public ordenCompra: string;
   public garantia: number;
-  public fecha: Date;
+  public fechaIngreso: Date;
+  public fechaCompra: Date;
 
   // Custom fields for creation
   public company?: CompanyEntity;
@@ -42,7 +43,9 @@ export class CreateMassiveDto {
 
   static fromExcelRow(row: any): CreateMassiveDto {
     // PARSE EXCEL DATE TO JS DATE
-    const date = row['FECHA INGRESO'] ? new Date(Math.round((row['FECHA INGRESO'] - 25569) * 86400 * 1000)) : undefined;
+    const fechaIngreso = row['FECHA INGRESO'] ? new Date(Math.round((row['FECHA INGRESO'] - 25569) * 86400 * 1000)) : undefined;
+    const fechaCompra = row['FECHA COMPRA'] ? new Date(Math.round((row['FECHA COMPRA'] - 25569) * 86400 * 1000)) : undefined;
+
     return new CreateMassiveDto({
       empresa: row['EMPRESA'] === 'N/A' || row['EMPRESA'] === '' ? undefined : row['EMPRESA'],
       rutUsuario: row['RUT USUARIO'] === 'N/A' || row['RUT USUARIO'] === '' ? undefined : row['RUT USUARIO'],
@@ -68,13 +71,15 @@ export class CreateMassiveDto {
       encargadoAgencia: row['ENCARGADO AGENCIA'] === 'N/A' || row['ENCARGADO AGENCIA'] === '' ? undefined : row['ENCARGADO AGENCIA'],
       ordenCompra: row['ORDEN COMPRA'] === 'N/A' || row['ORDEN COMPRA'] === '' ? undefined : row['ORDEN COMPRA'],
       garantia: row['GARANTIA MESES'] === 'N/A' || row['GARANTIA MESES'] === '' ? undefined : row['GARANTIA MESES'],
-      fecha: date,
+      fechaIngreso: fechaIngreso,
+      fechaCompra: fechaCompra
     });
   }
 
   static toEntity(value: CreateMassiveDto): IEquipment {
     return {
-      fechaIngreso: value.fecha,
+      fechaIngreso: value.fechaIngreso,
+      fechaCompra: value.fechaCompra,
       rut: value.rutUsuario,
       agenciaId: value.agency.id,
       agenciaDpc: value.agency.dpc,

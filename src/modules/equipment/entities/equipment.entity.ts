@@ -42,8 +42,8 @@ export class EquipmentEntity implements IEquipment {
   @Column({name: 'fecha_ingreso', type: 'date', default: () => 'CURRENT_DATE', comment: 'Fecha de ingreso del equipo'})
   fechaIngreso: Date;
 
-  @Column({name: 'fecha_compra', type: 'date', default: () => 'CURRENT_DATE', comment: 'Fecha de compra del equipo'})
-  fechaCompra: Date;
+  @Column({name: 'fecha_compra', type: 'date', nullable: true, comment: 'Fecha de compra del equipo'})
+  fechaCompra?: Date;
 
   @Column({name: 'orden_compra', length: 50, comment: 'Orden de compra del equipo'})
   ordenCompra: string;
