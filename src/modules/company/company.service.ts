@@ -1,15 +1,16 @@
 import { ConflictException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository }                                                     from '@nestjs/typeorm';
 
-import { FindOptionsWhere }         from 'typeorm/find-options/FindOptionsWhere';
-import { Equal, ILike, Repository } from 'typeorm';
+import { FindOptionsWhere }  from 'typeorm/find-options/FindOptionsWhere';
+import { Equal, Repository } from 'typeorm';
 
 import { CompanyEntity }    from '@modules/company/entities/company.entity';
 import { CompanyQueryDto }  from '@modules/company/dto/company-query.dto';
 import { CreateCompanyDto } from '@modules/company/dto/create-company.dto';
-import { UpdateCompanyDto } from './dto/update-company.dto';
 import { EquipmentService } from '@modules/equipment/equipment.service';
 import { UserCompanyType }  from '../../common/decorators/company-id.decorator';
+import { getWhereFilter }   from '../../common/utils/utils';
+import { UpdateCompanyDto } from './dto/update-company.dto';
 
 @Injectable()
 export class CompanyService {
@@ -19,18 +20,15 @@ export class CompanyService {
   ) {}
 
   public async list(queryParams?: CompanyQueryDto, userCompany?: UserCompanyType) {
-    const whereFilter: FindOptionsWhere<CompanyEntity> = Object.keys(queryParams).reduce((acc, key) => {
-      if (queryParams[key]) acc[key] = ILike(`%${queryParams[key]}%`);
-      return acc;
-    }, {});
+    const whereFilter: FindOptionsWhere<CompanyEntity> = getWhereFilter(queryParams);
 
-    if (queryParams.prestador !== undefined) whereFilter["prestador"] = Equal(queryParams.prestador);
-    if (queryParams.activo !== undefined) whereFilter["activo"] = Equal(queryParams.activo);
-    if (queryParams.id) whereFilter["id"] = Equal(queryParams.id);
+    if (queryParams.prestador !== undefined) whereFilter['prestador'] = Equal(queryParams.prestador);
+    if (queryParams.activo !== undefined) whereFilter['activo'] = Equal(queryParams.activo);
+    if (queryParams.id) whereFilter['id'] = Equal(queryParams.id);
 
     if (userCompany && !userCompany?.prestador) whereFilter['id'] = Equal(userCompany.empId);
 
-    return await this._companyRepository.find({ where: whereFilter });
+    return await this._companyRepository.find({where: whereFilter});
   }
 
   public async listBy(params: any) {
