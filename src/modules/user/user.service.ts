@@ -1,4 +1,4 @@
-import { ConflictException, GatewayTimeoutException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { UserEntity }                                                                from './entities/user.entity';
 import { Equal, FindOptionsWhere, ILike, Repository }                                from 'typeorm';
 import { UserQueryDto }                                                              from './dto/user-query.dto';
@@ -6,13 +6,26 @@ import { InjectRepository }                                                     
 import { UpdateUserDto }                                                             from './dto/update-user.dto';
 import { CreateUserDto }                                                             from './dto/create-user.dto';
 import { AxiosService }                                                              from './axios.service';
-
+import * as aws from 'aws-sdk';
+import { randomBytes } from 'crypto';
 @Injectable()
 export class UserService {
+  private cognito = new aws.CognitoIdentityServiceProvider;
   constructor(
     @InjectRepository(UserEntity) private readonly _userRepository: Repository<UserEntity>,
     private readonly axiosService: AxiosService,
-  ) {}
+  ) {
+    this.cognito = new aws.CognitoIdentityServiceProvider({
+    apiVersion: '2016-04-18',
+    region: 'us-east-1',
+  });
+}
+
+
+
+private generatePassword() {
+  return randomBytes(8).toString('base64').slice(0, 12) + 'A1!';
+}
 
   public async list(queryParams?: UserQueryDto) {
     const whereFilter: FindOptionsWhere<UserEntity> = Object.keys(queryParams).reduce((acc, key) => {
@@ -45,18 +58,23 @@ export class UserService {
       }
 
       const createdUser = await queryRunner.manager.save(UserEntity, createUserDto);
+      const tempPassword = this.generatePassword();
+      const createUserParams = {
+        UserPoolId: 'us-east-1_foHRlMORo',
+        Username: createdUser.email,
+        TemporaryPassword: tempPassword,
+        UserAttributes: [
+          { Name: 'custom:id', Value: createdUser.id.toString() },
+          { Name: 'custom:nombres', Value: `${createdUser.nombres} ${createdUser.apellidos}` },
+          { Name: 'email', Value: createdUser.email },
+          { Name: 'email_verified', Value: 'true' }
+        ],
+        MessageAction: 'SUPPRESS'
+      };
 
-      const lambdaResponse = await this.axiosService.createUser({
-        id: createdUser.id,
-        nombres: createdUser.nombres + ' ' + createdUser.apellidos,
-        email: createdUser.email,
-      }).then((response) => response.data)
-        .catch(() => {
-          throw new GatewayTimeoutException('Error al crear el usuario en cognito, usuario no se ha guardado.');
-        });
-
-      createdUser.cognito_id = lambdaResponse.userId;
-      createdUser.contrasena = lambdaResponse.temporaryPassword;
+      const createUserResult = await this.cognito.adminCreateUser(createUserParams).promise();
+      createdUser.cognito_id = createUserResult.User.Username;
+      createdUser.contrasena = tempPassword;
 
       await queryRunner.manager.save(UserEntity, createdUser);
 
