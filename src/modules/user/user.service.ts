@@ -12,50 +12,70 @@ export class UserService {
   constructor(
     @InjectRepository(UserEntity) private readonly _userRepository: Repository<UserEntity>,
     private readonly axiosService: AxiosService,
-
   ) {}
 
   public async list(queryParams?: UserQueryDto) {
     const whereFilter: FindOptionsWhere<UserEntity> = Object.keys(queryParams).reduce((acc, key) => {
-      if (queryParams[key]) acc[key] = ILike(`%${queryParams[key]}%`);
+      if (queryParams[key]) acc[key] = ILike(`%${ queryParams[key] }%`);
       return acc;
     }, {});
 
-    if (queryParams.activo !== undefined) whereFilter["activo"] = Equal(queryParams.activo);
-    if (queryParams.id) whereFilter["id"] = Equal(queryParams.id);
+    if (queryParams.activo !== undefined) whereFilter['activo'] = Equal(queryParams.activo);
+    if (queryParams.id) whereFilter['id'] = Equal(queryParams.id);
 
     return await this._userRepository.find({
       where: whereFilter,
-      relations: ["empresa"]  
-  });
+      relations: [ 'empresa' ]
+    });
   }
 
   public async create(createUserDto: CreateUserDto) {
-    const count = await this._userRepository.count({ where: [{ rut: createUserDto.rut }, { email: createUserDto.email }] });
+    // Iniciar una transacción
+    const queryRunner = this._userRepository.manager.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-    if (count > 0)
-      throw new ConflictException(`Usuario ya existe para el rut ${createUserDto.rut}, o para el correo ${createUserDto.email}.`);
+    try {
+      const count = await queryRunner.manager.count(UserEntity, {
+        where: [ {rut: createUserDto.rut}, {email: createUserDto.email} ]
+      });
 
-    const createdUser = await this._userRepository.save(createUserDto); // Save to get the created ID key
+      if (count > 0) {
+        throw new ConflictException(`Usuario ya existe para el rut ${ createUserDto.rut }, o para el correo ${ createUserDto.email }.`);
+      }
 
-    const lambdaResponse = await this.axiosService.createUser({
-      id: createdUser.id,
-      nombres: createdUser.nombres + ' ' + createdUser.apellidos,
-      email: createdUser.email,
-    });
+      const createdUser = await queryRunner.manager.save(UserEntity, createUserDto);
 
-    createdUser.cognito_id = lambdaResponse.userId;
-    createdUser.contrasena = lambdaResponse.temporaryPassword;
+      const lambdaResponse = await this.axiosService.createUser({
+        id: createdUser.id,
+        nombres: createdUser.nombres + ' ' + createdUser.apellidos,
+        email: createdUser.email,
+      });
 
-    await this._userRepository.save(createdUser);
+      createdUser.cognito_id = lambdaResponse.userId;
+      createdUser.contrasena = lambdaResponse.temporaryPassword;
 
-    return {
-      id: createdUser.id,
-      temporaryPassword: createdUser.contrasena,
-      cognitoId: createdUser.cognito_id,
-      nombres: createdUser.nombres + ' ' + createdUser.apellidos
-    };
+      await queryRunner.manager.save(UserEntity, createdUser);
+
+      // Commit de la transacción
+      await queryRunner.commitTransaction();
+
+      return {
+        id: createdUser.id,
+        temporaryPassword: createdUser.contrasena,
+        cognitoId: createdUser.cognito_id,
+        nombres: createdUser.nombres + ' ' + createdUser.apellidos
+      };
+    } catch (error) {
+      // Rollback en caso de error
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      // Liberar el query runner
+      await queryRunner.release();
+    }
   }
+
 
   public async update(id: number, updateUserDto: UpdateUserDto) {
     return await this._userRepository.update(id, updateUserDto);
@@ -67,16 +87,14 @@ export class UserService {
 
   public async getUserByCognitoId(cognitoId: string) {
     const user = await this._userRepository.findOne({
-        where: { cognito_id: cognitoId },
-        relations: ["empresa"] // Carga la relación con la empresa
+      where: {cognito_id: cognitoId},
+      relations: [ 'empresa' ] // Carga la relación con la empresa
     });
 
     if (!user) {
-        throw new NotFoundException(`Usuario con ID ${cognitoId} no encontrado.`);
+      throw new NotFoundException(`Usuario con ID ${ cognitoId } no encontrado.`);
     }
 
     return user;
-}
-
-
+  }
 }
