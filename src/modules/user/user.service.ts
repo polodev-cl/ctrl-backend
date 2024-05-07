@@ -1,11 +1,11 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import { UserEntity }                                       from './entities/user.entity';
-import { Equal, FindOptionsWhere, ILike, Repository }       from 'typeorm';
-import { UserQueryDto }                                     from './dto/user-query.dto';
-import { InjectRepository }                                 from '@nestjs/typeorm';
-import { UpdateUserDto }                                    from './dto/update-user.dto';
-import { CreateUserDto }                                    from './dto/create-user.dto';
-import { AxiosService }                                     from './axios.service';
+import { ConflictException, GatewayTimeoutException, Injectable, NotFoundException } from '@nestjs/common';
+import { UserEntity }                                                                from './entities/user.entity';
+import { Equal, FindOptionsWhere, ILike, Repository }                                from 'typeorm';
+import { UserQueryDto }                                                              from './dto/user-query.dto';
+import { InjectRepository }                                                          from '@nestjs/typeorm';
+import { UpdateUserDto }                                                             from './dto/update-user.dto';
+import { CreateUserDto }                                                             from './dto/create-user.dto';
+import { AxiosService }                                                              from './axios.service';
 
 @Injectable()
 export class UserService {
@@ -50,7 +50,10 @@ export class UserService {
         id: createdUser.id,
         nombres: createdUser.nombres + ' ' + createdUser.apellidos,
         email: createdUser.email,
-      });
+      }).then((response) => response.data)
+        .catch(() => {
+          throw new GatewayTimeoutException('Error al crear el usuario en cognito, usuario no se ha guardado.');
+        });
 
       createdUser.cognito_id = lambdaResponse.userId;
       createdUser.contrasena = lambdaResponse.temporaryPassword;
