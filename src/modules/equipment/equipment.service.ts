@@ -2,12 +2,11 @@ import { ConflictException, forwardRef, Inject, Injectable, NotFoundException } 
 import { InjectRepository }                                                     from '@nestjs/typeorm';
 
 import { Equal, FindOptionsWhere, ILike, In, Repository } from 'typeorm';
-
-import { AgencyService }          from '@modules/agency/agency.service';
-import { CompanyService }         from '@modules/company/company.service';
-import { EquipmentHistoryEntity } from '@modules/equipment/entities/equipment-history.entity';
-import { CreateMassiveDto }       from '@modules/equipment/dto/create-massive.dto';
-import { IEquipment }             from '@modules/equipment/interfaces/equipment.interface';
+import { AgencyService }                                  from '@modules/agency/agency.service';
+import { CompanyService }                                 from '@modules/company/company.service';
+import { EquipmentHistoryEntity }                         from '@modules/equipment/entities/equipment-history.entity';
+import { CreateMassiveDto }                               from '@modules/equipment/dto/create-massive.dto';
+import { IEquipment }                                     from '@modules/equipment/interfaces/equipment.interface';
 
 import { EquipmentEntity }    from './entities/equipment.entity';
 import { EquipmentQueryDto }  from './dto/equipment-query.dto';
@@ -21,7 +20,7 @@ export class EquipmentService {
     @InjectRepository(EquipmentEntity) private readonly _equipmentRepository: Repository<EquipmentEntity>,
     @InjectRepository(EquipmentHistoryEntity) private readonly _equipmentHistoryEntityRepository: Repository<EquipmentHistoryEntity>,
     @Inject(forwardRef(() => CompanyService)) private readonly _companyService: CompanyService,
-    private readonly _agencyService: AgencyService
+    @Inject(forwardRef(() => AgencyService)) private readonly _agencyService: AgencyService
   ) {}
 
   public async list(queryParams?: EquipmentQueryDto, userCompany?: UserCompanyType) {
@@ -64,6 +63,16 @@ export class EquipmentService {
         agencia: {
           empId: empId
         }
+      }
+    });
+
+    return equipmentCount > 0;
+  }
+
+  public async agencyHaveEquipmentCount(ageId: number) {
+    const equipmentCount = await this._equipmentRepository.count({
+      where: {
+        agenciaId: ageId
       }
     });
 

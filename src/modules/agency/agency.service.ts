@@ -1,7 +1,9 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository }                                 from '@nestjs/typeorm';
+import { ConflictException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository }                                                     from '@nestjs/typeorm';
 
 import { Equal, FindOptionsWhere, Repository } from 'typeorm';
+
+import { EquipmentService } from '@modules/equipment/equipment.service';
 
 import { getWhereFilter }  from '../../common/utils/utils';
 import { AgencyEntity }    from './entities/agency.entity';
@@ -11,7 +13,10 @@ import { UpdateAgencyDto } from './dto/update-agency.dto';
 
 @Injectable()
 export class AgencyService {
-  constructor(@InjectRepository(AgencyEntity) private readonly _agencyRepository: Repository<AgencyEntity>) {}
+  constructor(
+    @InjectRepository(AgencyEntity) private readonly _agencyRepository: Repository<AgencyEntity>,
+    @Inject(forwardRef(() => EquipmentService)) private readonly equipmentService: EquipmentService
+  ) {}
 
   public async list(queryParams?: AgencyQueryDto) {
     const whereFilter: FindOptionsWhere<AgencyEntity> = getWhereFilter(queryParams);
@@ -56,6 +61,7 @@ export class AgencyService {
   }
 
   public async delete(id: number) {
+    if (await this.equipmentService.agencyHaveEquipmentCount(id)) throw new ConflictException('AGENCY_HAVE_EQUIPMENT');
     return await this._agencyRepository.softDelete(id);
   }
 }
