@@ -10,6 +10,7 @@ export class ResponseEquipmentMiniMapper implements Partial<IEquipment> {
   public tipo: string;
   public rut: string;
   public garantiaMeses: number;
+  public fechaCompra?: Date;
   public inventario?: number;
   public modelo: string;
   public agencia?: Partial<AgencyEntity>;
@@ -47,6 +48,7 @@ export class ResponseEquipmentMiniMapper implements Partial<IEquipment> {
       tipo: entity.tipo,
       rut: entity.rut,
       garantiaMeses: entity.garantiaMeses,
+      fechaCompra: entity.fechaCompra,
       inventario: entity.inventario,
       modelo: entity.modelo,
       agencia,
