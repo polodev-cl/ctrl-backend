@@ -50,8 +50,6 @@ export class CreateMassiveDto {
       empresa: row['EMPRESA'] === 'N/A' || row['EMPRESA'] === '' ? undefined : row['EMPRESA'],
       rutUsuario: row['RUT USUARIO'] === 'N/A' || row['RUT USUARIO'] === '' ? undefined : row['RUT USUARIO'],
       agencia: row['AGENCIA'] === 'N/A' || row['AGENCIA'] === '' ? undefined : row['AGENCIA'],
-      // nemonico: row['Nemonico'],
-      // dpc: row['DPC'],
       caja: row['USO'] === 'N/A' || row['USO'] === '' ? undefined : EquipmentUseEnum[row['USO']],
       ubicacion: row['UBICACION'] === 'N/A' || row['UBICACION'] === '' ? undefined : row['UBICACION'],
       equipo: row['EQUIPO'] === 'N/A' || row['EQUIPO'] === '' ? undefined : row['EQUIPO'],
@@ -71,8 +69,8 @@ export class CreateMassiveDto {
       encargadoAgencia: row['ENCARGADO AGENCIA'] === 'N/A' || row['ENCARGADO AGENCIA'] === '' ? undefined : row['ENCARGADO AGENCIA'],
       ordenCompra: row['ORDEN COMPRA'] === 'N/A' || row['ORDEN COMPRA'] === '' ? undefined : row['ORDEN COMPRA'],
       garantia: row['GARANTIA MESES'] === 'N/A' || row['GARANTIA MESES'] === '' ? undefined : row['GARANTIA MESES'],
-      fechaIngreso: fechaIngreso,
-      fechaCompra: fechaCompra
+      fechaIngreso: row['FECHA INGRESO'] === 'N/A' || row['FECHA INGRESO'] === '' ? undefined : fechaIngreso,
+      fechaCompra: row['FECHA COMPRA'] === 'N/A' || row['FECHA COMPRA'] === '' ? undefined : fechaCompra,
     });
   }
 

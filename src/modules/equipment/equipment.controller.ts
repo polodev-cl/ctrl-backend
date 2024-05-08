@@ -17,10 +17,8 @@ import {
 }                          from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-import { v4 }    from 'uuid';
-import * as xlsx from 'xlsx';
-
-import { CreateMassiveDto }               from '@modules/equipment/dto/create-massive.dto';
+import { v4 }                             from 'uuid';
+import * as Exceljs                       from 'exceljs';
 import { ResponseEquipmentHistoryMapper } from '@modules/equipment/mappers/response-equipment-history.mapper';
 import { ResponseEquipmentMiniMapper }    from '@modules/equipment/mappers/response-equipment-mini.mapper';
 import { UploadStateEnum }                from '@modules/massive-upload/enum/upload-state.enum';
@@ -33,6 +31,8 @@ import { EquipmentQueryDto }            from './dto/equipment-query.dto';
 import { UpdateEquipmentDto }           from './dto/update-equipment.dto';
 import { EquipmentService }             from './equipment.service';
 import { UserCompany, UserCompanyType } from '../../common/decorators/company-id.decorator';
+import { CreateMassiveDto }             from '@modules/equipment/dto/create-massive.dto';
+import { convertJsonToDtoArray }        from '../../common/utils/utils';
 
 @Controller('equipment')
 export class EquipmentController {
@@ -76,11 +76,7 @@ export class EquipmentController {
   @UseInterceptors(FileInterceptor('file'))
   public async massiveUpload(
     @UploadedFile('file',
-      new ParseFilePipe({
-        validators: [
-          new FileTypeValidator({fileType: EXCEL_MIME_TYPE}),
-        ],
-      }),
+      new ParseFilePipe({validators: [ new FileTypeValidator({fileType: EXCEL_MIME_TYPE}) ]})
     ) file: Express.Multer.File) {
     const uuid = v4();
     const errorList: Set<string> = new Set<string>();
@@ -101,10 +97,17 @@ export class EquipmentController {
       uploadType: UploadTypeEnum.EQUIPMENT
     });
 
-    const workbook = xlsx.read(file.buffer, {type: 'buffer'});
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const data = xlsx.utils.sheet_to_json(sheet);
-    const massiveDto = data.map(CreateMassiveDto.fromExcelRow);
+    // Flow xlsx lib
+    // const workbook = xlsx.read(file.buffer, {type: 'buffer'});
+    // const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    // const data = xlsx.utils.sheet_to_json(sheet);
+
+    // Flow exceljs lib
+    const workbook = new Exceljs.Workbook();
+    await workbook.xlsx.load(file.buffer);
+    const data = workbook.worksheets[0].getSheetValues();
+
+    const massiveDto = convertJsonToDtoArray(data);
 
     await this._uploadService.createOrUpdateProcess({uuid: uuid, state: UploadStateEnum.VALIDATING});
     await this._equipmentService.validateMassiveUpload(massiveDto, errorList);
