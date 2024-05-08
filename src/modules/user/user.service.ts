@@ -17,7 +17,7 @@ export class UserService {
   ) {
     this.cognito = new aws.CognitoIdentityServiceProvider({
     apiVersion: '2016-04-18',
-    region: 'us-east-1',
+    region: process.env.REGION,
   });
 }
 
@@ -60,7 +60,7 @@ private generatePassword() {
       const createdUser = await queryRunner.manager.save(UserEntity, createUserDto);
       const tempPassword = this.generatePassword();
       const createUserParams = {
-        UserPoolId: 'us-east-1_foHRlMORo',
+        UserPoolId: process.env.USER_POOL_ID,
         Username: createdUser.email,
         TemporaryPassword: tempPassword,
         UserAttributes: [
