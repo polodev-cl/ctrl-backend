@@ -3,36 +3,29 @@ import {
   Body,
   Controller,
   Delete,
-  FileTypeValidator,
   Get,
   InternalServerErrorException,
   Param,
-  ParseFilePipe,
   ParseFloatPipe,
   Patch,
   Post,
   Query,
-  UploadedFile,
   UseInterceptors
 }                          from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { v4 }                             from 'uuid';
-import * as Exceljs                       from 'exceljs';
 import { ResponseEquipmentHistoryMapper } from '@modules/equipment/mappers/response-equipment-history.mapper';
 import { ResponseEquipmentMiniMapper }    from '@modules/equipment/mappers/response-equipment-mini.mapper';
 import { UploadStateEnum }                from '@modules/massive-upload/enum/upload-state.enum';
 import { UploadTypeEnum }                 from '@modules/massive-upload/enum/upload-type.enum';
 import { UploadService }                  from '@modules/massive-upload/services/upload.service';
-
-import { EXCEL_MIME_TYPE }              from '../../common/constants';
-import { CreateEquipmentDto }           from './dto/create-equipment.dto';
-import { EquipmentQueryDto }            from './dto/equipment-query.dto';
-import { UpdateEquipmentDto }           from './dto/update-equipment.dto';
-import { EquipmentService }             from './equipment.service';
-import { UserCompany, UserCompanyType } from '../../common/decorators/company-id.decorator';
-import { CreateMassiveDto }             from '@modules/equipment/dto/create-massive.dto';
-import { convertJsonToDtoArray }        from '../../common/utils/utils';
+import { CreateEquipmentDto }             from './dto/create-equipment.dto';
+import { EquipmentQueryDto }              from './dto/equipment-query.dto';
+import { UpdateEquipmentDto }             from './dto/update-equipment.dto';
+import { EquipmentService }               from './equipment.service';
+import { UserCompany, UserCompanyType }   from '../../common/decorators/company-id.decorator';
+import { CreateMassiveDto }               from '@modules/equipment/dto/create-massive.dto';
 
 @Controller('equipment')
 export class EquipmentController {
@@ -75,23 +68,20 @@ export class EquipmentController {
   @Post('/upload')
   @UseInterceptors(FileInterceptor('file'))
   public async massiveUpload(
-    @UploadedFile('file',
-      new ParseFilePipe({validators: [ new FileTypeValidator({fileType: EXCEL_MIME_TYPE}) ]})
-    ) file: Express.Multer.File) {
+    @Body() massiveDto: CreateMassiveDto[]
+  ) {
     const uuid = v4();
     const errorList: Set<string> = new Set<string>();
 
     const s3Params = {
       Bucket: 'bucket',
       Key: `equipment-massive-upload/${ uuid }.xlsx`,
-      Body: file.buffer,
-      ContentType: file.mimetype,
       ACL: 'public-read'
     };
 
     await this._uploadService.createOrUpdateProcess({
       uuid: uuid,
-      filename: file.originalname,
+      filename: `${ uuid }.xlsx`,
       filepath: s3Params.Key,
       state: UploadStateEnum.NOT_STARTED,
       uploadType: UploadTypeEnum.EQUIPMENT
@@ -103,11 +93,11 @@ export class EquipmentController {
     // const data = xlsx.utils.sheet_to_json(sheet);
 
     // Flow exceljs lib
-    const workbook = new Exceljs.Workbook();
-    await workbook.xlsx.load(file.buffer);
-    const data = workbook.worksheets[0].getSheetValues();
+    // const workbook = new Exceljs.Workbook();
+    // await workbook.xlsx.load(file.buffer);
+    // const data = workbook.worksheets[0].getSheetValues();
 
-    const massiveDto = convertJsonToDtoArray(data);
+    // const massiveDto = convertJsonToDtoArray(data);
 
     await this._uploadService.createOrUpdateProcess({uuid: uuid, state: UploadStateEnum.VALIDATING});
     await this._equipmentService.validateMassiveUpload(massiveDto, errorList);
