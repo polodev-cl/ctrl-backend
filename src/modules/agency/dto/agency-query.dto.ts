@@ -11,7 +11,7 @@ export class AgencyQueryDto implements Partial<AgencyEntity> {
   @IsOptional()
   id?: number;
 
-  @IsBoolean({message: IS_BOOLEAN})
+  @IsBoolean({message: IS_BOOLEAN('activo')})
   @Transform(({ value }) => (value === undefined ? undefined : value === "true"))
   @IsOptional()
   activo?: boolean;
