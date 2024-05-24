@@ -6,8 +6,8 @@ import { IUpload }                                                              
 
 @Entity('ctrl_proceso_carga')
 export class UploadProcessEntity implements IUpload {
-  @PrimaryColumn({comment: 'Identificador del proceso de carga', type: 'uuid', default: () => v4()})
-  uuid: string;
+  @PrimaryColumn({comment: 'Identificador del proceso de carga', type: 'uuid'})
+  uuid: string = v4();
 
   @Column({length: 255, comment: 'Nombre del archivo'})
   filename: string;

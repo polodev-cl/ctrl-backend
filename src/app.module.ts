@@ -46,9 +46,9 @@ import { AwsModule }     from '@modules/aws/aws.module';
           autoLoadEntities: true,
           synchronize: false,
           // logging: configService.get('environment') === 'dev',
-          ssl: {
-            rejectUnauthorized: false,
-          },
+          // ssl: {
+          //   rejectUnauthorized: false,
+          // },
         };
       },
     }),
