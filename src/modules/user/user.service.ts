@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, GatewayTimeoutException, Injectable, NotFoundException } from '@nestjs/common';
 import { UserEntity }                                                                from './entities/user.entity';
 import { Equal, FindOptionsWhere, ILike, Repository }                                from 'typeorm';
 import { UserQueryDto }                                                              from './dto/user-query.dto';
@@ -58,23 +58,18 @@ private generatePassword() {
       }
 
       const createdUser = await queryRunner.manager.save(UserEntity, createUserDto);
-      const tempPassword = this.generatePassword();
-      const createUserParams = {
-        UserPoolId: process.env.USER_POOL_ID,
-        Username: createdUser.email,
-        TemporaryPassword: tempPassword,
-        UserAttributes: [
-          { Name: 'custom:id', Value: createdUser.id.toString() },
-          { Name: 'custom:nombres', Value: `${createdUser.nombres} ${createdUser.apellidos}` },
-          { Name: 'email', Value: createdUser.email },
-          { Name: 'email_verified', Value: 'true' }
-        ],
-        MessageAction: 'SUPPRESS'
-      };
 
-      const createUserResult = await this.cognito.adminCreateUser(createUserParams).promise();
-      createdUser.cognito_id = createUserResult.User.Username;
-      createdUser.contrasena = tempPassword;
+      const lambdaResponse = await this.axiosService.createUser({
+        id: createdUser.id,
+        nombres: createdUser.nombres + ' ' + createdUser.apellidos,
+        email: createdUser.email,
+      }).then((response) => response.data)
+        .catch(() => {
+          throw new GatewayTimeoutException('Error al crear el usuario en cognito, usuario no se ha guardado.');
+        });
+
+      createdUser.cognito_id = lambdaResponse.userId;
+      createdUser.contrasena = lambdaResponse.temporaryPassword;
 
       await queryRunner.manager.save(UserEntity, createdUser);
 
@@ -97,7 +92,7 @@ private generatePassword() {
     }
   }
 
-
+  
   public async update(id: number, updateUserDto: UpdateUserDto) {
     return await this._userRepository.update(id, updateUserDto);
   }
