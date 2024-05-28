@@ -12,6 +12,7 @@ import { UserModule }          from '@modules/user/user.module';
 import { AppController } from './app.controller';
 import { AppService }    from './app.service';
 import { AwsModule }     from '@modules/aws/aws.module';
+import * as aws from 'aws-sdk';
 
 @Module({
   imports: [
@@ -26,6 +27,12 @@ import { AwsModule }     from '@modules/aws/aws.module';
             username: process.env.DB_USERNAME || 'postgres',
             password: process.env.DB_PASSWORD || 'postgres',
             name: process.env.DB_DATABASE || 'postgres',
+          },
+          aws: {
+            region: process.env.AWS_REGION || 'us-east-1',
+          },
+          lambda: {
+            cognitoUser: process.env.LAMBDA_USER_COGNITO_URL,
           },
           environment: process.env.NODE_ENV,
         }),

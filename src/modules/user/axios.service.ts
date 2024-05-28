@@ -1,13 +1,16 @@
 import axios          from 'axios';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 
 @Injectable()
 export class AxiosService {
-  private apiUrl = process.env.LAMBDA_URL;
+  constructor(private readonly configService: ConfigService) {}
 
   public async createUser(createUserDto: any): Promise<any> {
-    return await axios.post(`${ this.apiUrl }/user`, {
+    const lambdaUrl = this.configService.get('lambda.cognitoUser');
+    
+    return await axios.post(`${ lambdaUrl }/user`, {
       id: createUserDto.id.toString(),
       nombres: createUserDto.nombres,
       email: createUserDto.email
