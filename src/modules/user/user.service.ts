@@ -1,5 +1,5 @@
-import { ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { InjectRepository }                                         from '@nestjs/typeorm';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository }                                 from '@nestjs/typeorm';
 
 import { Equal, FindOptionsWhere, ILike, Repository } from 'typeorm';
 import { randomBytes }                                from 'crypto';
@@ -13,15 +13,12 @@ import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UserService {
-  private readonly logger: Logger;
-
   private cognito = new aws.CognitoIdentityServiceProvider;
 
   constructor(
     @InjectRepository(UserEntity) private readonly _userRepository: Repository<UserEntity>,
     private readonly axiosService: AxiosService,
   ) {
-    this.logger = new Logger(UserService.name);
     this.cognito = new aws.CognitoIdentityServiceProvider({
       apiVersion: '2016-04-18',
       region: process.env.REGION,
@@ -44,7 +41,7 @@ export class UserService {
   }
 
   public async create(createUserDto: CreateUserDto) {
-    this.logger.log(`createUserDto: ${ JSON.stringify(createUserDto) }`);
+    console.log(`createUserDto: ${ JSON.stringify(createUserDto) }`);
 
 
     const queryRunner = this._userRepository.manager.connection.createQueryRunner();
