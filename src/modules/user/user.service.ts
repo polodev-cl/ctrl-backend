@@ -21,6 +21,7 @@ export class UserService {
     @InjectRepository(UserEntity) private readonly _userRepository: Repository<UserEntity>,
     private readonly axiosService: AxiosService,
   ) {
+    this.logger = new Logger(UserService.name);
     this.cognito = new aws.CognitoIdentityServiceProvider({
       apiVersion: '2016-04-18',
       region: process.env.REGION,
