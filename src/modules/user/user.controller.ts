@@ -14,6 +14,7 @@ export class UserController {
   public async list(@Query() query: UserQueryDto) {
     return await this._userService.list(query);
   }
+
   @Post()
   public async create(@Body() createUserDto: CreateUserDto) {
     return await this._userService.create(createUserDto);

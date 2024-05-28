@@ -1,5 +1,5 @@
-import { ConflictException, GatewayTimeoutException, Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository }                                                          from '@nestjs/typeorm';
+import { ConflictException, GatewayTimeoutException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { InjectRepository }                                                                  from '@nestjs/typeorm';
 
 import { Equal, FindOptionsWhere, ILike, Repository } from 'typeorm';
 
@@ -11,10 +11,14 @@ import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UserService {
+  private readonly logger: Logger;
+
   constructor(
     @InjectRepository(UserEntity) private readonly _userRepository: Repository<UserEntity>,
     private readonly axiosService: AxiosService
-  ) {}
+  ) {
+    this.logger = new Logger(UserService.name);
+  }
 
   public async list(queryParams?: UserQueryDto) {
     const whereFilter: FindOptionsWhere<UserEntity> = Object.keys(queryParams).reduce((acc, key) => {
@@ -32,6 +36,9 @@ export class UserService {
   }
 
   public async create(createUserDto: CreateUserDto) {
+    this.logger.log(`createUserDto: ${ JSON.stringify(createUserDto) }`);
+
+
     const queryRunner = this._userRepository.manager.connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -57,6 +64,8 @@ export class UserService {
         .catch(() => {
           throw new GatewayTimeoutException('Error al crear el usuario en cognito, usuario no se ha guardado.');
         });
+
+      this.logger.log(`Usuario creado en cognito con id ${ lambdaResponse.userId } y contraseña temporal ${ lambdaResponse.temporaryPassword }.`);
 
       createdUser.cognito_id = lambdaResponse.userId;
       createdUser.contrasena = lambdaResponse.temporaryPassword;

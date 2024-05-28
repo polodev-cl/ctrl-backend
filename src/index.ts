@@ -9,7 +9,7 @@ let cachedServer;
 
 const bootstrap = async () => {
   const nestApp = await NestFactory.create(AppModule, {
-    logger: process.env.ENV === 'prod' ? [ 'warn', 'error' ] : [ 'debug', 'log', 'verbose' ],
+    logger: process.env.ENV === 'prod' ? [ 'warn', 'error', 'log' ] : [ 'debug', 'log', 'verbose' ],
   });
 
   nestApp.setGlobalPrefix('api');
