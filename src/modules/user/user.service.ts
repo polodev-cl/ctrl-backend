@@ -61,7 +61,8 @@ export class UserService {
           email: createdUser.email,
         })
         .then((response) => response.data)
-        .catch(() => {
+        .catch((error) => {
+          this.logger.error('Lambda createUser failed.', JSON.stringify(error));
           throw new GatewayTimeoutException('Error al crear el usuario en cognito, usuario no se ha guardado.');
         });
 
