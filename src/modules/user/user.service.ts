@@ -73,7 +73,14 @@ export class UserService {
         MessageAction: 'SUPPRESS'
       };
 
-      const createUserResult = await this.cognito.adminCreateUser(createUserParams).promise();
+      let createUserResult;
+
+      try {
+        createUserResult = await this.cognito.adminCreateUser(createUserParams).promise();
+      } catch (error) {
+        console.error('Error al crear usuario en cognito:', error);
+        throw error;
+      }
       createdUser.cognito_id = createUserResult.User.Username;
       createdUser.contrasena = tempPassword;
 

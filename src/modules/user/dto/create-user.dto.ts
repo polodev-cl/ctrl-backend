@@ -21,7 +21,7 @@ export class CreateUserDto implements Partial<UserEntity> {
 
   @IsNumber()
   @IsOptional()
-  usuarioCreacionId?: number
+  usuarioCreacionId?: number;
 
   @IsNumber()
   @IsOptional()
