@@ -30,6 +30,7 @@ import * as aws from 'aws-sdk';
           },
           aws: {
             region: process.env.AWS_REGION || 'us-east-1',
+            
           },
           lambda: {
             cognitoUser: process.env.LAMBDA_USER_COGNITO_URL,
