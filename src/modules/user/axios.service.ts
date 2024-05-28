@@ -1,5 +1,5 @@
-import axios          from 'axios';
-import { Injectable } from '@nestjs/common';
+import axios             from 'axios';
+import { Injectable }    from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 //TEST
@@ -14,6 +14,6 @@ export class AxiosService {
       id: createUserDto.id.toString(),
       nombres: createUserDto.nombres,
       email: createUserDto.email
-    }, {timeout: 15000, timeoutErrorMessage: 'Lambda cognito no disponible'});
+    }, {timeout: 5000});
   }
 }
