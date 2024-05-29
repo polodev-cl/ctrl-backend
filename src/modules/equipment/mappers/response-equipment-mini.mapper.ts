@@ -1,11 +1,13 @@
-import { AgencyEntity }    from '@modules/agency/entities/agency.entity';
-import { IEquipment }      from '@modules/equipment/interfaces/equipment.interface';
-import { CompanyEntity }   from '@modules/company/entities/company.entity';
-import { UserEntity }      from '@modules/user/entities/user.entity';
+import { AgencyEntity } from '@modules/agency/entities/agency.entity';
+import { IEquipment } from '@modules/equipment/interfaces/equipment.interface';
+import { CompanyEntity } from '@modules/company/entities/company.entity';
+import { UserEntity } from '@modules/user/entities/user.entity';
 import { EquipmentEntity } from '@modules/equipment/entities/equipment.entity';
+import { EquipmentStatusEnum } from '../enums/equipment-status.enum';
 
 export class ResponseEquipmentMiniMapper implements Partial<IEquipment> {
   public id: number;
+  public estado: EquipmentStatusEnum;
   public nombre: string;
   public tipo: string;
   public rut: string;
@@ -28,7 +30,7 @@ export class ResponseEquipmentMiniMapper implements Partial<IEquipment> {
     let usuario: Partial<UserEntity>;
 
     if (entity.agencia)
-      agencia = {id: entity.agenciaId, nombre: entity.agencia.nombre, nemonico: entity.agenciaMnemonic, dpc: entity.agenciaDpc};
+      agencia = { id: entity.agenciaId, nombre: entity.agencia.nombre, nemonico: entity.agenciaMnemonic, dpc: entity.agenciaDpc };
 
     if (entity.agencia?.empresa) empresa = {
       id: entity.agencia.empresa.id,
@@ -44,6 +46,7 @@ export class ResponseEquipmentMiniMapper implements Partial<IEquipment> {
 
     return new ResponseEquipmentMiniMapper({
       id: entity.id,
+      estado: entity.estado,
       nombre: entity.nombre,
       tipo: entity.tipo,
       rut: entity.rut,
