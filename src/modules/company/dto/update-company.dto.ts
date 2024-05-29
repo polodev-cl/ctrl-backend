@@ -2,6 +2,7 @@ import { IsBoolean, IsOptional, IsString, IsUrl, Length } from 'class-validator'
 import { Transform, Type }                                from 'class-transformer';
 
 import { CompanyEntity } from '../entities/company.entity';
+import { LENGTH_FIELD }  from '../../../common/constants';
 
 export class UpdateCompanyDto implements Partial<CompanyEntity> {
 
@@ -17,7 +18,7 @@ export class UpdateCompanyDto implements Partial<CompanyEntity> {
   razonSocial?: string;
 
   @IsString()
-  @Length(3, 50)
+  @Length(2, 50)
   @Transform(({value}) => value.toUpperCase())
   @IsOptional()
   nombreCorto?: string;
@@ -45,7 +46,7 @@ export class UpdateCompanyDto implements Partial<CompanyEntity> {
   sitioWeb?: string;
 
   @IsString()
-  @Length(3, 255)
+  @Length(3, 255, {message: LENGTH_FIELD('observaciones', 3, 255)})
   @IsOptional()
   observaciones?: string;
 
