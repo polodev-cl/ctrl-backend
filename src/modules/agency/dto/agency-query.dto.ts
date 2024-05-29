@@ -22,7 +22,7 @@ export class AgencyQueryDto implements Partial<AgencyEntity> {
   nombre?: string;
 
   @IsString()
-  @Length(3, 255, {message: LENGTH_FIELD(3, 255)})
+  @Length(3, 255, {message: LENGTH_FIELD('nemonico', 3, 255)})
   @IsOptional()
   nemonico?: string;
 

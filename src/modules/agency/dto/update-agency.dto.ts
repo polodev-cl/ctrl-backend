@@ -7,19 +7,19 @@ import { IS_BOOLEAN, IS_NUMBER, IS_STRING, LENGTH_FIELD }    from '../../../comm
 export class UpdateAgencyDto implements Partial<AgencyEntity> {
 
   @IsString({message: IS_STRING('nombre')})
-  @Length(3, 255, {message: LENGTH_FIELD(3, 255)})
+  @Length(3, 255, {message: LENGTH_FIELD('nombre', 3, 255)})
   @Transform(({value}) => value.toUpperCase())
   @IsOptional()
   nombre?: string;
 
   @IsString({message: IS_STRING('nemonico')})
-  @Length(3, 50, {message: LENGTH_FIELD(3, 50)})
+  @Length(3, 50, {message: LENGTH_FIELD('nemonico', 3, 50)})
   @Transform(({value}) => value.toUpperCase())
   @IsOptional()
   nemonico?: string;
 
   @IsString({message: IS_STRING('comuna')})
-  @Length(3, 50, {message: LENGTH_FIELD(3, 50)})
+  @Length(3, 50, {message: LENGTH_FIELD('comuna', 3, 50)})
   @IsOptional()
   comuna?: string;
 

@@ -11,27 +11,27 @@ export class CompanyQueryDto implements Partial<CompanyEntity> {
   id?: number;
 
   @IsString({message: IS_STRING('rut')})
-  @Length(3, 10, {message: LENGTH_FIELD(3, 10)})
+  @Length(3, 10, {message: LENGTH_FIELD('rut', 3, 10)})
   @IsOptional()
   rut?: string;
 
   @IsString({message: IS_STRING('razonSocial')})
-  @Length(3, 255, {message: LENGTH_FIELD(3, 255)})
+  @Length(3, 255, {message: LENGTH_FIELD('razón social', 3, 255)})
   @IsOptional()
   razonSocial?: string;
 
   @IsString({message: IS_STRING('nombreCorto')})
-  @Length(3, 50, {message: LENGTH_FIELD(3, 50)})
+  @Length(3, 50, {message: LENGTH_FIELD('nombre corto', 3, 50)})
   @IsOptional()
   nombreCorto?: string;
 
   @IsString({message: IS_STRING('giro')})
-  @Length(3, 255, {message: LENGTH_FIELD(3, 255)})
+  @Length(3, 255, {message: LENGTH_FIELD('giro', 3, 255)})
   @IsOptional()
   giro?: string;
 
   @IsString({message: IS_STRING('direccion')})
-  @Length(3, 50, {message: LENGTH_FIELD(3, 50)})
+  @Length(3, 50, {message: LENGTH_FIELD('dirección', 3, 50)})
   @IsOptional()
   comuna?: string;
 

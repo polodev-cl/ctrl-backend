@@ -1,7 +1,7 @@
 export const EXCEL_MIME_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
 // Validation messages
-export const LENGTH_FIELD = (min: number, max?: number) => `Campo debe tener al menos ${ min } caracteres${ max ? ` y no más de ${ max } caracteres.` : '.' }`;
+export const LENGTH_FIELD = (nombre: string, min: number, max?: number) => `Campo ${ nombre } debe tener al menos ${ min } caracteres${ max ? ` y no más de ${ max } caracteres.` : '.' }`;
 export const IS_STRING = (nombre: string) => `El campo ${ nombre } debe ser un texto.`;
 export const IS_NUMBER = (nombre: string) => `El campo ${ nombre } debe ser un número.`;
 export const IS_DATE = (nombre: string) => `El campo ${ nombre } debe ser una fecha.`;
