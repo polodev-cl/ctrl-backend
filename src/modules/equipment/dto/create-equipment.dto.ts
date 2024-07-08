@@ -76,8 +76,7 @@ export class CreateEquipmentDto implements Partial<EquipmentEntity> {
 
   @IsString()
   @Length(1, 50)
-  @IsOptional()
-  nombre?: string;
+  nombre!: string;
 
   @IsString()
   @Length(3, 50)
