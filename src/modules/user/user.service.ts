@@ -107,7 +107,6 @@ export class UserService {
   }
 
   public async delete(id: number) {
-    // return await this._userRepository.softDelete(id);
     const user = await this._userRepository.findOne({ where: { id } });
     if (!user) {
       throw new NotFoundException(`Usuario con ID ${ id } no encontrado.`);

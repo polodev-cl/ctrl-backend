@@ -82,7 +82,7 @@ export class CreateMassiveDto {
       agenciaId: value.agency.id,
       agenciaDpc: value.agency.dpc,
       agenciaMnemonic: value.agency.nemonico,
-      ordenCompra: value.ordenCompra,
+      ordenCompra: value.ordenCompra ? value.ordenCompra : 0,
       inventario: value.numeroInventario ? parseInt(value.numeroInventario.toString()) : undefined,
       tipo: value.equipo,
       marca: value.marca,
@@ -95,9 +95,9 @@ export class CreateMassiveDto {
       ramGb: value.ram ? parseInt(value.ram) : undefined,
       disco: value.ssdHdd,
       ddllTbk: value.ddllTbk,
-      serie: value.numeroSerie,
+      serie: value.numeroSerie ? value.numeroSerie : 'N/A',
       encargadoAgencia: value.encargadoAgencia,
-      ubicacion: value.ubicacion,
+      ubicacion: value.ubicacion ? value.ubicacion : 'N/A',
       garantiaMeses: value.garantia,
     } as IEquipment;
   }

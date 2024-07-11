@@ -1,5 +1,5 @@
 import { Type }                                           from 'class-transformer';
-import { IsEnum, IsNumber, IsOptional, IsString, Length, Min } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString, Length, Max, Min } from 'class-validator';
 
 import { EquipmentEntity }       from '../entities/equipment.entity';
 import { EquipmentUseEnum }      from '@modules/equipment/enums/equipment-use.enum';
@@ -41,6 +41,7 @@ export class CreateEquipmentDto implements Partial<EquipmentEntity> {
 
   @IsNumber()
   @Type(() => Number)
+  @Max(999999999)
   @IsOptional()
   inventario?: number;
 
