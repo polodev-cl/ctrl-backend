@@ -164,18 +164,18 @@ export class EquipmentService {
   }
 
   public async massiveFindExcelDuplicates(data: IEquipment[], errors: Set<string> = new Set<string>()) {
-    const inventories = new Set();
+    // const inventories = new Set();
     const macs = new Set();
     const series = new Set();
 
     for (let i = 0; i < data.length; i++) {
       const record = data[i];
 
-      if (inventories.has(record.inventario)) errors.add(`Registro ${ i + 1 }: Inventario ${ record.inventario } ya se encuentra en el excel`);
+      // if (inventories.has(record.inventario)) errors.add(`Registro ${ i + 1 }: Inventario ${ record.inventario } ya se encuentra en el excel`);
       if (macs.has(record.mac)) errors.add(`Registro ${ i + 1 }: Mac ${ record.mac } ya se encuentra en el excel`);
       if (series.has(record.serie)) errors.add(`Registro ${ i + 1 }: Serie ${ record.serie } ya se encuentra en el excel`);
 
-      inventories.add(record.inventario);
+      // inventories.add(record.inventario);
       macs.add(record.mac);
       series.add(record.serie);
     }
