@@ -107,8 +107,27 @@ export class UserService {
   }
 
   public async delete(id: number) {
-    return await this._userRepository.softDelete(id);
+    // return await this._userRepository.softDelete(id);
+    const user = await this._userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException(`Usuario con ID ${ id } no encontrado.`);
+    }
+
+    await this._userRepository.softDelete(id);
+
+    const deleteUserParams = {
+      UserPoolId: process.env.USER_POOL_ID,
+      Username: user.cognito_id,
+    };
+
+    try {
+      await this.cognito.adminDeleteUser(deleteUserParams).promise();
+    } catch (error) {
+      console.error('Error al eliminar usuario en cognito:', error);
+      throw error;
   }
+      return { message: 'Usuario eliminado correctamente.' };
+}
 
   public async getUserByCognitoId(cognitoId: string) {
     const user = await this._userRepository.findOne({
