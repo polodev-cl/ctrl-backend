@@ -6,30 +6,32 @@ import { EquipmentUseEnum }      from '@modules/equipment/enums/equipment-use.en
 import { EquipmentStatusEnum }   from '@modules/equipment/enums/equipment-status.enum';
 
 export class CreateMassiveDto {
-  public empresa?: string;
-  public rutUsuario?: string;
-  public agencia?: string;
-  public caja?: string;
-  public ubicacion?: string;
+  public empresa: string;
+  public rutUsuario: string;
+  public agencia: string;
+  // public nemonico: string;
+  // public dpc: string;
+  public caja: string;
+  public ubicacion: string;
   public equipo: string;
   public marca: string;
   public modelo: string;
-  public sistemaOperativo?: string;
-  public mac?: string;
+  public sistemaOperativo: string;
+  public mac: string;
   public nombreEquipo: string;
-  public procesador?: string;
-  public ram?: string;
-  public ssdHdd?: EquipmentDiskTypeEnum;
-  public ip?: string;
-  public ddllTbk?: string;
-  public numeroSerie?: string;
-  public numeroInventario?: number;
-  public estado?: string;
+  public procesador: string;
+  public ram: string;
+  public ssdHdd: string;
+  public ip: string;
+  public ddllTbk: string;
+  public numeroSerie: string;
+  public numeroInventario: number;
+  public estado: string;
   public encargadoAgencia: string;
   public ordenCompra: string;
   public garantia: number;
   public fechaIngreso: Date;
-  public fechaCompra?: Date;
+  public fechaCompra: Date;
 
   // Custom fields for creation
   public company?: CompanyEntity;
@@ -67,7 +69,7 @@ export class CreateMassiveDto {
       encargadoAgencia: row['ENCARGADO AGENCIA'] === 'N/A' || row['ENCARGADO AGENCIA'] === '' ? undefined : row['ENCARGADO AGENCIA'],
       ordenCompra: row['ORDEN COMPRA'] === 'N/A' || row['ORDEN COMPRA'] === '' ? undefined : row['ORDEN COMPRA'],
       garantia: row['GARANTIA MESES'] === 'N/A' || row['GARANTIA MESES'] === '' ? undefined : row['GARANTIA MESES'],
-      fechaIngreso: row['FECHA INGRESO'] === 'N/A' || row['FECHA INGRESO'] === '' ? new Date() : fechaIngreso,
+      fechaIngreso: row['FECHA INGRESO'] === 'N/A' || row['FECHA INGRESO'] === '' ? undefined : fechaIngreso,
       fechaCompra: row['FECHA COMPRA'] === 'N/A' || row['FECHA COMPRA'] === '' ? undefined : fechaCompra,
     });
   }
