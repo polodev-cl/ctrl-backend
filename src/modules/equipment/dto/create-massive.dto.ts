@@ -90,7 +90,7 @@ export class CreateMassiveDto {
       sistemaOperativo: value.sistemaOperativo,
       mac: value.mac,
       ip: value.ip,
-      nombre: value.nombreEquipo,
+      nombre: value.nombreEquipo || 'N/A',
       procesador: value.procesador,
       ramGb: value.ram ? parseInt(value.ram) : undefined,
       disco: value.ssdHdd,
